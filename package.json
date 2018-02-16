@@ -6,6 +6,7 @@
   "scripts": {
     "start-development": "NODE_ENV=development node index.js",
     "start-production": "NODE_ENV=production node index.js",
+    "format": "prettier --write '**/*.js'",
     "test": "ava"
   },
   "author": {
@@ -23,6 +24,7 @@
     "moment": "^2.24.0"
   },
   "devDependencies": {
-    "ava": "^1.2.1"
+    "ava": "^1.2.1",
+    "prettier": "^1.16.4"
   }
 }
