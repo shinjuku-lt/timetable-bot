@@ -2,6 +2,7 @@ const Botkit = require("botkit");
 const Talk = require('./models/Talk')
 const Timetable = require('./models/Timetable')
 const Config = require('./config/Config')
+const ArrayUtil = require('./ArrayUtil')
 
 // bot controller 取得
 const controller = Botkit.slackbot({
@@ -18,17 +19,6 @@ map.set("disc99", new Talk("disc99", "そのドメインは本当にドメイン
 map.set("kyusuke", new Talk("kyusuke", "ルンバ買った", 10));
 map.set("yshn", new Talk("yshn", "LTで宗教画を使ったらバチカンに告訴された件", 50));
 */
-
-function shuffle(array) {
-    var i = array.length;
-    while (i) {
-        var j = Math.floor(Math.random() * i);
-        var t = array[--i];
-        array[i] = array[j];
-        array[j] = t;
-    }
-    return array;
-}
 
 // botの起動
 controller.spawn({
@@ -54,7 +44,7 @@ controller.hears(["ltstart"], ["direct_mention"], (bot, message) => {
     const now = new Date();
     now.setHours(time[0]);
     now.setMinutes(time[1]);
-    const talks = shuffle(Array.from(map.values()));
+    const talks = ArrayUtil.shuffle(Array.from(map.values()));
     bot.reply(message, new Timetable(talks, now).generate());
 });
 
