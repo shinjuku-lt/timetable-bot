@@ -7,23 +7,27 @@ module.exports = class Timetable {
     }
 
     generate() {
-        var message = this.zeroPadding(this.date.getHours()) + ":" + this.zeroPadding(this.date.getMinutes()) + " 開始";
-        this.talks.reduce((prev, current, index, array) => {
-            const hour = this.date.getHours();
-            prev += "\n" + this.zeroPadding(this.date.getHours()) + ":" + this.zeroPadding(this.date.getMinutes()) +
-                " @" + current.userName + " 「" + current.title + "」";
-            this.date.setMinutes(this.date.getMinutes() + current.duration);
+        const introduction = this.zeroPadding(this.date.getHours()) + ":" + this.zeroPadding(this.date.getMinutes()) + " 開始";
+        const result = this.talks.reduce((prev, current, index, array) => {
             const d = new Date(this.date.getTime());
-            d.setMinutes(d.getMinutes() + current.duration);
-            if (hour != d.getHours() && index != array.length - 1) {
-                prev += "\n" + this.zeroPadding(this.date.getHours()) + ":" + this.zeroPadding(this.date.getMinutes()) +
+            d.setMinutes(d.getMinutes() + prev.elapsed);
+            prev.message += "\n" + this.zeroPadding(d.getHours()) + ":" + this.zeroPadding(d.getMinutes()) +
+                " @" + current.userName + " 「" + current.title + "」";
+            prev.elapsed += current.duration;
+            if (prev.elapsed >= prev.interval * (prev.breakCount + 1) + prev.breakCount * config.breakTiemMinute) {
+                const d2 = new Date(this.date.getTime());
+                d2.setMinutes(d2.getMinutes() + prev.elapsed);
+                prev.message += "\n" + this.zeroPadding(d2.getHours()) + ":" + this.zeroPadding(d2.getMinutes()) +
                     " " + config.breakTiemMinute + "分休憩";
-                this.date.setMinutes(this.date.getMinutes() + config.breakTiemMinute);
+                prev.elapsed += config.breakTiemMinute;
+                prev.breakCount++;
             }
             return prev;
-        }, message);
-        message += '\n' + this.zeroPadding(this.date.getHours()) + ":" + this.zeroPadding(this.date.getMinutes()) + "終了";
-        return message;
+        }, { message: "", interval: 60, breakCount: 0, elapsed: 0 });
+        const d = new Date(this.date.getTime());
+        d.setMinutes(d.getMinutes() + result.elapsed);
+        const closing = '\n' + this.zeroPadding(d.getHours()) + ":" + this.zeroPadding(d.getMinutes()) + "終了";
+        return introduction + result.message + closing;
     }
 
     zeroPadding(n) {
