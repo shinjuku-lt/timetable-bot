@@ -2,7 +2,7 @@ const Botkit = require("botkit");
 const Talk = require('./models/Talk')
 const Timetable = require('./models/Timetable')
 const Config = require('./config/Config')
-const ArrayUtil = require('./ArrayUtil')
+const ArrayUtil = require('./util/ArrayUtil')
 
 // bot controller 取得
 const controller = Botkit.slackbot({
