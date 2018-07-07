@@ -1,0 +1,16 @@
+{
+  "name": "shinjuku-lt-timetable",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "botkit": "^0.6.14",
+    "dotenv": "^6.0.0"
+  }
+}
