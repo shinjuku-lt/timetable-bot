@@ -1,16 +1,18 @@
 {
   "name": "shinjuku-lt-timetable",
   "version": "1.0.0",
-  "description": "",
-  "main": "bot.js",
+  "description": "lt timetable generator",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": {
+    "name": "shinjuku-lt",
+    "url": "https://www.shinjukult.tk"
+  },
+  "license": "MIT",
   "dependencies": {
-    "botkit": "^0.6.14",
-    "dotenv": "^6.0.0"
+    "botkit": "^0.6.21",
+    "dotenv": "^6.2.0"
   }
 }
