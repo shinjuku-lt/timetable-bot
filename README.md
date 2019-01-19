@@ -1,6 +1,6 @@
 # shinjuku-lt-timetable
 
-a lt-timetable generator 🏭
+SlackBot to generate lt-timetable 🏭
 
 ## Getting Started
 Install the node_modules
@@ -31,7 +31,7 @@ bot command help
 
 add your talk ⚡️
 ```
-> @bot add title duration
+> @bot add title,duration
 ```
 
 generate timetable
