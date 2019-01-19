@@ -1,12 +1,40 @@
 # shinjuku-lt-timetable
 
-## run
+a lt-timetable generator 🏭
 
-`node bot.js`
+## Getting Started
+Install the node_modules
 
-## setup
-
-```bash
-echo "bot_token = '<BOT TOKEN>'" > .env
+```sh
 npm i
+```
+
+Setting `<BOT_TOKEN>`
+
+```sh
+echo "bot_token = 'XXX'" > .env
+```
+
+## Usage
+Run bot process
+
+```sh
+npm run start
+```
+
+### command
+
+bot command help
+```
+> @bot help
+```
+
+add your talk ⚡️
+```
+> @bot add title duration
+```
+
+generate timetable
+```
+> @bot show 15:00
 ```
