@@ -1,11 +1,13 @@
-const config = require('../config/Config')
+const config = require('./Config')
 
-module.exports = class Timetable {
+class Timetable {
+
     constructor(talks, date) {
         this.talks = talks;
         this.date = date;
     }
 
+    // TODO: refactor it simple
     generate() {
         const introduction = `${this.zeroPadding(this.date.getHours())}:${this.zeroPadding(this.date.getMinutes())} 開始`;
         const result = this.talks.reduce((prev, current, index, array) => {
@@ -13,11 +15,11 @@ module.exports = class Timetable {
             d.setMinutes(d.getMinutes() + prev.elapsed);
             prev.message += `\n${this.zeroPadding(d.getHours())}:${this.zeroPadding(d.getMinutes())} @${current.userName} 「${current.title}」`;
             prev.elapsed += current.duration;
-            if (prev.elapsed >= prev.interval * (prev.breakCount + 1) + prev.breakCount * config.breakTiemMinute) {
+            if (prev.elapsed >= prev.interval * (prev.breakCount + 1) + prev.breakCount * config.BREAK_TIME_MINUTE) {
                 const d2 = new Date(this.date.getTime());
                 d2.setMinutes(d2.getMinutes() + prev.elapsed);
-                prev.message += `\n${this.zeroPadding(d2.getHours())}:${this.zeroPadding(d2.getMinutes())} ${config.breakTiemMinute} 分休憩`;
-                prev.elapsed += config.breakTiemMinute;
+                prev.message += `\n${this.zeroPadding(d2.getHours())}:${this.zeroPadding(d2.getMinutes())} ${config.BREAK_TIME_MINUTE} 分休憩`;
+                prev.elapsed += config.BREAK_TIME_MINUTE;
                 prev.breakCount++;
             }
             return prev;
@@ -32,3 +34,5 @@ module.exports = class Timetable {
         return ('00' + n).slice(-2);
     }
 }
+
+module.exports = Timetable;
