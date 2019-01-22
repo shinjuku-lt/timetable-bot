@@ -1,7 +1,7 @@
 {
-  "name": "shinjuku-lt-timetable",
+  "name": "timetable-bot",
   "version": "1.0.0",
-  "description": "lt timetable generator",
+  "description": "bot to generate lt-timetable",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

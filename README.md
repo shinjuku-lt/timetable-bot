@@ -1,4 +1,4 @@
-# shinjuku-lt-timetable
+# timetable-bot
 
 SlackBot to generate lt-timetable 🏭
 
