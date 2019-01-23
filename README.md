@@ -7,19 +7,7 @@ SlackBot to generate lt-timetable 🏭
 Setting `<BOT_TOKEN>`
 
 ```sh
-echo "bot_token = 'XXX'" > .env
-```
-
-Build docker image
-
-```sh
-$ docker build -t shinjuku-lt-timetable .
-```
-
-Docker run
-
-```
-$ docker run -it --name shinjuku-lt-timetable shinjuku-lt-timetable:latest
+echo "BOT_TOKEN = 'XXX'" > .env
 ```
 
 ## Usage
@@ -29,7 +17,7 @@ Run bot process
 npm run start
 ```
 
-### command
+### Command
 
 bot command help
 ```
@@ -46,3 +34,16 @@ generate timetable
 > @bot show 15:00
 ```
 
+## (Option) Pro Tips 👌
+
+Build docker image
+
+```sh
+docker build -t timetable-bot .
+```
+
+Docker run
+
+```sh
+docker run -it --name timetable-bot timetable-bot:latest
+```
