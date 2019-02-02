@@ -14,8 +14,8 @@ class OnMemoryStorage {
         return this.map.set(key, value);
     }
 
-    delete(key) {
-        return this.map.delete(key);
+    deleteAll() {
+        return this.map.clear();
     }
 }
 

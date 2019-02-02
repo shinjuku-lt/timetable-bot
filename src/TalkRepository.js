@@ -20,8 +20,8 @@ class TalkRepository {
         this.storage.save(userId, talk);
     }
 
-    delete(userId) {
-        this.storage.delete(userId);
+    deleteAll() {
+        this.storage.deleteAll();
     }
 }
 

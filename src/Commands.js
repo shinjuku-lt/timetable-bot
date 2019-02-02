@@ -64,19 +64,13 @@ class Commands {
         });
 
         /**
-         * delete talk
+         * clear all talks
          *
-         * `@bot delete`
+         * `@bot claer`
          */
-        this.controller.hears(['delete'], 'direct_mention', (bot, message) => {
-            bot.api.users.info({ user: message.user }, (err, response) => {
-                if (err) {
-                    bot.say("ERROR :(");
-                } else {
-                    this.talkRepository.delete(response.user.name);
-                    bot.reply(message, 'delete talk');
-                }
-            });
+        this.controller.hears(['clear'], 'direct_mention', (bot, message) => {
+            this.talkRepository.deleteAll();
+            bot.reply(message, 'clear all talks🚮');
         });
     }
 

@@ -29,9 +29,9 @@ add your talk ⚡️
 > @bot add title,duration
 ```
 
-delete my talk
+clear all talks
 ```
-> @bot delete
+> @bot clear
 ```
 
 generate timetable
