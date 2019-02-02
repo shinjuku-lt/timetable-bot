@@ -14,5 +14,9 @@
   "dependencies": {
     "botkit": "^0.7.0",
     "dotenv": "^6.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shinjuku-lt/timetable-bot"
   }
 }
