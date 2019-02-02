@@ -29,6 +29,11 @@ add your talk ⚡️
 > @bot add title,duration
 ```
 
+clear all talks
+```
+> @bot clear
+```
+
 generate timetable
 ```
 > @bot show 15:00

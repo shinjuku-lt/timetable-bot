@@ -1,5 +1,6 @@
 const ArrayExtension = require('./extensions/ArrayExtension')
 const Talk = require('./args/Talk')
+const TalkRepository = require('./TalkRepository')
 const Timetable = require('./Timetable')
 const StartDate = require('./args/StartDate')
 
@@ -10,16 +11,13 @@ class Commands {
 
     constructor(controller) {
         this.controller = controller;
+        this.talkRepository = TalkRepository.shared;
     }
 
     /**
      * Listen conversation
      */
     hearing() {
-
-        // Dummy In-Memory store
-        // - TODO: impl file storage
-        const map = new Map();
 
         /**
          * show usage
@@ -38,9 +36,13 @@ class Commands {
         this.controller.hears(['show'], 'direct_mention', (bot, message) => {
             const requestJson = Commands.requestJson(message, null);
             const startDate = StartDate.fromJson(requestJson);
-            const talks = ArrayExtension.shuffle(Array.from(map.values()));
-            const timetable = new Timetable(talks, startDate.value);
-            bot.reply(message, timetable.generate());
+
+            this.talkRepository.fetchAll()
+                .then((result) => {
+                    const shuffledTalks = ArrayExtension.shuffle(result);
+                    const timetable = new Timetable(shuffledTalks, startDate.value);
+                    bot.reply(message, timetable.generate());
+                });
         });
 
         /**
@@ -55,10 +57,20 @@ class Commands {
                 } else {
                     const requestJson = Commands.requestJson(message, response.user);
                     const talk = Talk.fromJson(requestJson)
-                    map.set(talk.userName, talk);
+                    this.talkRepository.save(talk.userName, talk);
                     bot.reply(message, 'saved talk⚡️');
                 }
             });
+        });
+
+        /**
+         * clear all talks
+         *
+         * `@bot claer`
+         */
+        this.controller.hears(['clear'], 'direct_mention', (bot, message) => {
+            this.talkRepository.deleteAll();
+            bot.reply(message, 'clear all talks🚮');
         });
     }
 
