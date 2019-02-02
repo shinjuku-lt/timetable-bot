@@ -11,7 +11,7 @@ class Commands {
 
     constructor(controller) {
         this.controller = controller;
-        this.talkRepository = new TalkRepository();
+        this.talkRepository = TalkRepository.shared;
     }
 
     /**
@@ -59,6 +59,22 @@ class Commands {
                     const talk = Talk.fromJson(requestJson)
                     this.talkRepository.save(talk.userName, talk);
                     bot.reply(message, 'saved talk⚡️');
+                }
+            });
+        });
+
+        /**
+         * delete talk
+         *
+         * `@bot delete`
+         */
+        this.controller.hears(['delete'], 'direct_mention', (bot, message) => {
+            bot.api.users.info({ user: message.user }, (err, response) => {
+                if (err) {
+                    bot.say("ERROR :(");
+                } else {
+                    this.talkRepository.delete(response.user.name);
+                    bot.reply(message, 'delete talk');
                 }
             });
         });
