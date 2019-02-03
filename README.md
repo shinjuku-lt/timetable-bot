@@ -7,8 +7,10 @@ SlackBot to generate lt-timetable 🏭
 Setting `<BOT_TOKEN>`
 
 ```sh
-echo "BOT_TOKEN = 'XXX'" > .env
+export BOT_TOKEN = 'XXX'
 ```
+
+Use of [direnv](https://github.com/direnv/direnv) is recommended.
 
 ## Usage
 Run bot process
