@@ -6,14 +6,19 @@ class Talk {
         this.duration = duration;
     }
 
-    static fromJson(json) {
-        // TODO: error handling
-        const args = json.text.split(" ")[1].split(",");
+    static fromArgs(args) {
+        const title = args.texts[0];
+        const duration = parseInt(args.texts[1]);
+
+        if (isNaN(duration)) {
+            throw new Error("duration parase error");
+        }
+
         return new Talk(
-            json.requestUser.name,
-            args[0],
-            parseInt(args[1])
-        )
+            args.user.name,
+            title,
+            duration
+        );
     }
 }
 

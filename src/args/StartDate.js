@@ -4,13 +4,18 @@ class StartDate {
         this.value = value;
     }
 
-    static fromJson(json) {
-        // TODO: error handling
-        const args = json.text.split(" ")[1].split(":");
+    static fromArgs(args) {
+        // e.g. [15,00]
+        const xs = args.texts[0].split(":")
+
+        if (xs.length !== 2) {
+            throw new Error("date parase error");
+        }
+
         const date = (function () {
             const d = new Date();
-            d.setHours(args[0]);
-            d.setMinutes(args[1]);
+            d.setHours(xs[0]);
+            d.setMinutes(xs[1]);
             return d
         }());
 
