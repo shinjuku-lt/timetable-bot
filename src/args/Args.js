@@ -1,5 +1,5 @@
 /**
- * User input command object
+ * User input command `Response` object
  */
 class Args {
     constructor(message, user) {

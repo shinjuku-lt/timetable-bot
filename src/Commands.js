@@ -46,7 +46,7 @@ class Commands {
                         bot.reply(message, timetable.generate());
                     });
             } catch {
-                bot.say(message, "e.g. `show 15:00` ");
+                bot.reply(message, "Invalid format. (*e.g. `show 15:00`*)");
             }
         });
 
@@ -55,21 +55,14 @@ class Commands {
          *
          * `@bot add title duration`
          */
-        this.controller.hears(['add'], 'direct_mention', (bot, message) => {
-            bot.api.users.info({ user: message.user }, (err, response) => {
-                if (err) {
-                    bot.say(message, "please try again");
-                } else {
-                    try {
-                        const args = new Args(message, response.user);
-                        const talk = Talk.fromArgs(args);
-                        this.talkRepository.save(talk.userName, talk);
-                        bot.reply(message, 'saved talk⚡️');
-                    } catch {
-                        bot.say(message, "e.g. `add title 10` ");
-                    }
-                }
-            });
+        this._request(['add'], (bot, message, args) => {
+            try {
+                const talk = Talk.fromArgs(args);
+                this.talkRepository.save(talk.userName, talk);
+                bot.reply(message, `_${talk.description}_`);
+            } catch {
+                bot.reply(message, "Invalid format. (*e.g. `add title 10`*)");
+            }
         });
 
         /**
@@ -79,7 +72,7 @@ class Commands {
          */
         this.controller.hears(['clear'], 'direct_mention', (bot, message) => {
             this.talkRepository.deleteAll();
-            bot.reply(message, 'clear all talks🚮');
+            bot.reply(message, 'Clear all talks🚮');
         });
 
         /**
@@ -118,7 +111,29 @@ class Commands {
          * - Note: reach when the input command does not exist
          */
         this.controller.hears(['(.*)'], 'direct_mention', (bot, message) => {
-            bot.reply(message, 'command not supported');
+            bot.reply(message, 'Command not supported');
+        });
+    }
+
+    /**
+     *
+     * `controller.hears` wrapper
+     *
+     * @param patterns: An array or a comma separated string containing a list of regular expressions to match
+     * @param completion: callback function that receives a (`bot`, `message` `args`)
+     *
+     * - See Also: https://botkit.ai/docs/core.html#controllerhears
+     */
+    _request(patterns, completion) {
+        this.controller.hears(patterns, 'direct_mention', (bot, message) => {
+            bot.api.users.info({ user: message.user }, (error, response) => {
+                if (error) {
+                    bot.reply(message, "Please try again");
+                } else {
+                    const args = new Args(message, response.user);
+                    completion(bot, message, args);
+                }
+            });
         });
     }
 }

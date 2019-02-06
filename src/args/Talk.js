@@ -6,6 +6,10 @@ class Talk {
         this.duration = duration;
     }
 
+    get description() {
+        return `name: ${this.userName}, title: ${this.title}, duration: ${this.duration}m`
+    }
+
     static fromArgs(args) {
         const title = args.texts[0];
         const duration = parseInt(args.texts[1]);
