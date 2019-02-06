@@ -81,6 +81,45 @@ class Commands {
             this.talkRepository.deleteAll();
             bot.reply(message, 'clear all talks🚮');
         });
+
+        /**
+         * shutdown bot
+         *
+         * `@bot shutdown`
+         */
+        this.controller.hears(['shutdown'], 'direct_mention,', (bot, message) => {
+            bot.startConversation(message, (_, convo) => {
+                convo.ask('Are you sure you want me to shutdown?', [
+                    {
+                        pattern: bot.utterances.yes,
+                        callback: (_, convo) => {
+                            convo.say('Bye!');
+                            convo.next();
+                            setTimeout(() => {
+                                process.exit();
+                            }, 3000);
+                        }
+                    },
+                    {
+                        pattern: bot.utterances.no,
+                        default: true,
+                        callback: (_, convo) => {
+                            convo.say('*Phew!*');
+                            convo.next();
+                        }
+                    }
+                ]);
+            });
+        });
+
+        /**
+         * default
+         *
+         * - Note: reach when the input command does not exist
+         */
+        this.controller.hears(['(.*)'], 'direct_mention', (bot, message) => {
+            bot.reply(message, 'command not supported');
+        });
     }
 }
 
