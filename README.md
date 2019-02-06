@@ -26,9 +26,9 @@ bot command help
 > @bot help
 ```
 
-add your talk ⚡️
+add your talk
 ```
-> @bot add title,duration
+> @bot add title duration
 ```
 
 clear all talks
