@@ -1,7 +1,7 @@
 const Args = require('./args/Args');
 const ArrayExtension = require('./extensions/ArrayExtension')
 const Talk = require('./args/Talk')
-const TalkRepository = require('./TalkRepository')
+const TalkRepository = require('./repository/TalkRepository')
 const Timetable = require('./Timetable')
 const StartDate = require('./args/StartDate')
 
@@ -12,7 +12,7 @@ class Commands {
 
     constructor(controller) {
         this.controller = controller;
-        this.talkRepository = TalkRepository.shared;
+        this.talkRepository = TalkRepository.withFile(controller.storage);
     }
 
     /**
@@ -34,20 +34,18 @@ class Commands {
          *
          * `@bot show 15:00`
          */
-        this.controller.hears(['show'], 'direct_mention', (bot, message) => {
-            try {
-                const args = new Args(message, null);
-                const startDate = StartDate.fromArgs(args);
-
-                this.talkRepository.fetchAll()
-                    .then((result) => {
-                        const shuffledTalks = ArrayExtension.shuffle(result);
-                        const timetable = new Timetable(shuffledTalks, startDate.value);
-                        bot.reply(message, timetable.generate());
-                    });
-            } catch {
-                bot.reply(message, "Invalid format. (*e.g. `show 15:00`*)");
-            }
+        this._request(['show'], (bot, message, args) => {
+            (async () => {
+                try {
+                    const startDate = StartDate.fromArgs(args);
+                    const talks = await this.talkRepository.fetchAll();
+                    const shuffledTalks = ArrayExtension.shuffle(talks);
+                    const timetable = new Timetable(shuffledTalks, startDate.value);
+                    bot.reply(message, timetable.generate());
+                } catch {
+                    bot.reply(message, "Invalid format (*e.g. `show 15:00`*)");
+                }
+            })();
         });
 
         /**
@@ -56,13 +54,15 @@ class Commands {
          * `@bot add title duration`
          */
         this._request(['add'], (bot, message, args) => {
-            try {
-                const talk = Talk.fromArgs(args);
-                this.talkRepository.save(talk.userName, talk);
-                bot.reply(message, `_${talk.description}_`);
-            } catch {
-                bot.reply(message, "Invalid format. (*e.g. `add title 10`*)");
-            }
+            (async () => {
+                try {
+                    const talk = Talk.fromArgs(args);
+                    await this.talkRepository.save(talk.userName, talk);
+                    bot.reply(message, `_${talk.description}_`);
+                } catch {
+                    bot.reply(message, "Invalid format (*e.g. `add title 10`*)");
+                }
+            })();
         });
 
         /**
@@ -71,8 +71,14 @@ class Commands {
          * `@bot claer`
          */
         this.controller.hears(['clear'], 'direct_mention', (bot, message) => {
-            this.talkRepository.deleteAll();
-            bot.reply(message, 'Clear all talks🚮');
+            (async () => {
+                try {
+                    await this.talkRepository.deleteAll();
+                    bot.reply(message, 'Clear all talks🚮');
+                } catch {
+                    bot.reply(message, "Invalid format (*e.g. `clear`*)");
+                }
+            })();
         });
 
         /**
@@ -122,7 +128,7 @@ class Commands {
      * @param patterns: An array or a comma separated string containing a list of regular expressions to match
      * @param completion: callback function that receives a (`bot`, `message` `args`)
      *
-     * - See Also: https://botkit.ai/docs/core.html#controllerhears
+     * - SeeAlso: https://botkit.ai/docs/core.html#controllerhears
      */
     _request(patterns, completion) {
         this.controller.hears(patterns, 'direct_mention', (bot, message) => {
