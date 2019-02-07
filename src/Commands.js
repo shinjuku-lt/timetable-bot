@@ -1,12 +1,15 @@
 const Args = require('./args/Args');
 const ArrayExtension = require('./extensions/ArrayExtension')
+const StartDate = require('./args/StartDate')
 const Talk = require('./args/Talk')
 const TalkRepository = require('./repository/TalkRepository')
 const Timetable = require('./Timetable')
-const StartDate = require('./args/StartDate')
+const R = require('./Resource')
 
 /**
  * Slack command EndPoint
+ *
+ * - Note: for example MVC, corresponds to `Controller`
  */
 class Commands {
 
@@ -39,11 +42,17 @@ class Commands {
                 try {
                     const startDate = StartDate.fromArgs(args);
                     const talks = await this.talkRepository.fetchAll();
-                    const shuffledTalks = ArrayExtension.shuffle(talks);
-                    const timetable = new Timetable(shuffledTalks, startDate.value);
-                    bot.reply(message, timetable.generate());
+
+                    if (talk.length === 0) {
+                        bot.reply(message, R.TEXT.SHOW_EMPTY);
+                    } else {
+                        const shuffledTalks = ArrayExtension.shuffle(talks);
+                        const timetable = new Timetable(shuffledTalks, startDate.value);
+                        bot.reply(message, timetable.generate());
+                    }
+
                 } catch {
-                    bot.reply(message, "Invalid format (*e.g. `show 15:00`*)");
+                    bot.reply(message, R.TEXT.SHOW_INVALID);
                 }
             })();
         });
@@ -60,7 +69,7 @@ class Commands {
                     await this.talkRepository.save(talk.userName, talk);
                     bot.reply(message, `_${talk.description}_`);
                 } catch {
-                    bot.reply(message, "Invalid format (*e.g. `add title 10`*)");
+                    bot.reply(message, R.TEXT.ADD_INVALID);
                 }
             })();
         });
@@ -74,9 +83,9 @@ class Commands {
             (async () => {
                 try {
                     await this.talkRepository.deleteAll();
-                    bot.reply(message, 'Clear all talks🚮');
+                    bot.reply(message, R.TEXT.CLEAR_SUCCESS);
                 } catch {
-                    bot.reply(message, "Invalid format (*e.g. `clear`*)");
+                    bot.reply(message, R.TEXT.CLEAR_INVALID);
                 }
             })();
         });
@@ -88,11 +97,11 @@ class Commands {
          */
         this.controller.hears(['shutdown'], 'direct_mention,', (bot, message) => {
             bot.startConversation(message, (_, convo) => {
-                convo.ask('Are you sure you want me to shutdown?', [
+                convo.ask(R.TEXT.SHUTDOWN_ASK, [
                     {
                         pattern: bot.utterances.yes,
                         callback: (_, convo) => {
-                            convo.say('Bye!');
+                            convo.say(R.TEXT.SHUTDOWN_YES);
                             convo.next();
                             setTimeout(() => {
                                 process.exit();
@@ -103,7 +112,7 @@ class Commands {
                         pattern: bot.utterances.no,
                         default: true,
                         callback: (_, convo) => {
-                            convo.say('*Phew!*');
+                            convo.say(R.TEXT.SHUTDOWN_NO);
                             convo.next();
                         }
                     }
@@ -117,7 +126,7 @@ class Commands {
          * - Note: reach when the input command does not exist
          */
         this.controller.hears(['(.*)'], 'direct_mention', (bot, message) => {
-            bot.reply(message, 'Command not supported');
+            bot.reply(message, R.TEXT.NOT_SUPPORT);
         });
     }
 
@@ -134,7 +143,7 @@ class Commands {
         this.controller.hears(patterns, 'direct_mention', (bot, message) => {
             bot.api.users.info({ user: message.user }, (error, response) => {
                 if (error) {
-                    bot.reply(message, "Please try again");
+                    bot.reply(message, R.TEXT.UNIVERSAL_ERROR);
                 } else {
                     const args = new Args(message, response.user);
                     completion(bot, message, args);
