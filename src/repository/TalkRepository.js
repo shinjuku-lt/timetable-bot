@@ -7,11 +7,21 @@ class TalkRepository {
     }
 
     fetchAll() {
-        return this.storage.getAll();
+        return this.storage.getAll()
+            .then(result => result.map(r => r.object));
     }
 
-    save(userId, talk) {
-        return this.storage.save(userId, talk);
+    fetch(id) {
+        return this.storage.get(id)
+            .then(result => result.object);
+    }
+
+    save(id, talk) {
+        return this.storage.save(id, talk);
+    }
+
+    delete(id) {
+        return this.storage.delete(id);
     }
 
     deleteAll() {
@@ -24,10 +34,6 @@ class TalkRepository {
     static withFile(botKitStorage) {
         const fileStorage = new FileStorage(botKitStorage);
         return new TalkRepository(fileStorage);
-    }
-
-    // TODO: impl
-    static withMongo() {
     }
 }
 

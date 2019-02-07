@@ -15,7 +15,7 @@ class Commands {
 
     constructor(controller) {
         this.controller = controller;
-        this.talkRepository = TalkRepository.withFile(controller.storage);
+        this.talkRepository = TalkRepository.withFile(controller.storage.users);
     }
 
     /**
@@ -43,7 +43,7 @@ class Commands {
                     const startDate = StartDate.fromArgs(args);
                     const talks = await this.talkRepository.fetchAll();
 
-                    if (talk.length === 0) {
+                    if (talks.length === 0) {
                         bot.reply(message, R.TEXT.SHOW_EMPTY);
                     } else {
                         const shuffledTalks = ArrayExtension.shuffle(talks);
@@ -51,7 +51,8 @@ class Commands {
                         bot.reply(message, timetable.generate());
                     }
 
-                } catch {
+                } catch (e) {
+                    console.error(`error: ${e.message}`);
                     bot.reply(message, R.TEXT.SHOW_INVALID);
                 }
             })();
@@ -66,10 +67,28 @@ class Commands {
             (async () => {
                 try {
                     const talk = Talk.fromArgs(args);
-                    await this.talkRepository.save(talk.userName, talk);
+                    await this.talkRepository.save(args.user.id, talk);
                     bot.reply(message, `_${talk.description}_`);
-                } catch {
+                } catch (e) {
+                    console.error(`error: ${e.message}`);
                     bot.reply(message, R.TEXT.ADD_INVALID);
+                }
+            })();
+        });
+
+        /**
+         * delete my talk
+         *
+         * `@bot delete`
+         */
+        this._request(['delete'], (bot, message, args) => {
+            (async () => {
+                try {
+                    await this.talkRepository.delete(args.user.id);
+                    bot.reply(message, R.TEXT.DELETE_SUCCESS);
+                } catch (e) {
+                    console.error(`error: ${e.message}`);
+                    bot.reply(message, R.TEXT.UNIVERSAL_ERROR);
                 }
             })();
         });
@@ -77,42 +96,32 @@ class Commands {
         /**
          * clear all talks
          *
-         * `@bot claer`
+         * `@bot claer`
          */
-        this.controller.hears(['clear'], 'direct_mention', (bot, message) => {
-            (async () => {
-                try {
-                    await this.talkRepository.deleteAll();
-                    bot.reply(message, R.TEXT.CLEAR_SUCCESS);
-                } catch {
-                    bot.reply(message, R.TEXT.CLEAR_INVALID);
-                }
-            })();
-        });
-
-        /**
-         * shutdown bot
-         *
-         * `@bot shutdown`
-         */
-        this.controller.hears(['shutdown'], 'direct_mention,', (bot, message) => {
+        this._request(['clear'], (bot, message, _) => {
             bot.startConversation(message, (_, convo) => {
-                convo.ask(R.TEXT.SHUTDOWN_ASK, [
+                convo.ask(R.TEXT.CLEAR_ASK, [
                     {
                         pattern: bot.utterances.yes,
                         callback: (_, convo) => {
-                            convo.say(R.TEXT.SHUTDOWN_YES);
-                            convo.next();
-                            setTimeout(() => {
-                                process.exit();
-                            }, 3000);
+                            (async () => {
+                                try {
+                                    await this.talkRepository.deleteAll();
+                                    convo.say(R.TEXT.CLEAR_SUCCESS);
+                                } catch (e) {
+                                    console.error(`error: ${e.message}`);
+                                    convo.say(R.TEXT.CLEAR_INVALID);
+                                } finally {
+                                    convo.next();
+                                }
+                            })();
                         }
                     },
                     {
                         pattern: bot.utterances.no,
                         default: true,
                         callback: (_, convo) => {
-                            convo.say(R.TEXT.SHUTDOWN_NO);
+                            convo.say(R.TEXT.UNIVERSAL_ASK_NO);
                             convo.next();
                         }
                     }
@@ -125,7 +134,7 @@ class Commands {
          *
          * - Note: reach when the input command does not exist
          */
-        this.controller.hears(['(.*)'], 'direct_mention', (bot, message) => {
+        this.controller.hears(['(.*)'], 'direct_mention, direct_mention, mention', (bot, message) => {
             bot.reply(message, R.TEXT.NOT_SUPPORT);
         });
     }
@@ -140,7 +149,7 @@ class Commands {
      * - SeeAlso: https://botkit.ai/docs/core.html#controllerhears
      */
     _request(patterns, completion) {
-        this.controller.hears(patterns, 'direct_mention', (bot, message) => {
+        this.controller.hears(patterns, 'direct_message, direct_mention, mention', (bot, message) => {
             bot.api.users.info({ user: message.user }, (error, response) => {
                 if (error) {
                     bot.reply(message, R.TEXT.UNIVERSAL_ERROR);

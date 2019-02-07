@@ -12,12 +12,12 @@ class StartDate {
             throw new Error("date parase error");
         }
 
-        const date = (function () {
+        const date = (() => {
             const d = new Date();
             d.setHours(xs[0]);
             d.setMinutes(xs[1]);
             return d
-        }());
+        })();
 
         return new StartDate(date);
     }

@@ -8,49 +8,63 @@ class FileStorage {
 
     /**
      * @param raw: botkit controller.storage
-     *
-     * - Note: using `storage.users` level
      */
     constructor(raw) {
-        this._storage = raw.users;
+        this._storage = raw;
     }
 
-    async getAll() {
-        this._storage.all((error, result) => {
-            if (error) {
-                throw error;
-            } else {
-                return result.map(r => r.object);
-            }
+    getAll() {
+        return new Promise((resolve, reject) => {
+            this._storage.all((error, result) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            });
         });
     }
 
-    async save(id, object) {
+    get(id) {
+        return new Promise((resolve, reject) => {
+            this._storage.get(id, (error, result) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    }
+
+    save(id, object) {
         const data = { id: id, object: object };
-        this._storage.save(data, (error) => {
-            if (error) {
-                throw error;
-            } else {
-                return;
-            }
+        return new Promise((resolve, reject) => {
+            this._storage.save(data, (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            });
         });
     }
 
-    async delete(id) {
-        this._storage.delete(id, (error) => {
-            if (error) {
-                throw error;
-            } else {
-                return;
-            }
+    delete(id) {
+        return new Promise((resolve, reject) => {
+            this._storage.delete(id, (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            });
         });
     }
 
-    async deleteAll() {
-        const result = await this.getAll();
-        return result.map(value => {
-            this.delete(value.id);
-        });
+    deleteAll() {
+        return this.getAll()
+            .then(result => result.forEach(r => this.delete(r.id)));
     }
 }
 
