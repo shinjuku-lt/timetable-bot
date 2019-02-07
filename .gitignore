@@ -1,2 +1,13 @@
+# Generated files
 node_modules/
+json_db/
+
+# Settings
 .envrc
+
+# OS X files
+.DS_Store
+Thumbs.db
+
+# Non-common VS Code user settings
+**/.vscode/settings.json

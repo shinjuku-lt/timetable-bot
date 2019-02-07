@@ -1,18 +1,21 @@
 const Args = require('./args/Args');
 const ArrayExtension = require('./extensions/ArrayExtension')
-const Talk = require('./args/Talk')
-const TalkRepository = require('./TalkRepository')
-const Timetable = require('./Timetable')
 const StartDate = require('./args/StartDate')
+const Talk = require('./args/Talk')
+const TalkRepository = require('./repository/TalkRepository')
+const Timetable = require('./Timetable')
+const R = require('./Resource')
 
 /**
  * Slack command EndPoint
+ *
+ * - Note: for example MVC, corresponds to `Controller`
  */
 class Commands {
 
     constructor(controller) {
         this.controller = controller;
-        this.talkRepository = TalkRepository.shared;
+        this.talkRepository = TalkRepository.withFile(controller.storage.users);
     }
 
     /**
@@ -34,20 +37,25 @@ class Commands {
          *
          * `@bot show 15:00`
          */
-        this.controller.hears(['show'], 'direct_mention', (bot, message) => {
-            try {
-                const args = new Args(message, null);
-                const startDate = StartDate.fromArgs(args);
+        this._request(['show'], (bot, message, args) => {
+            (async () => {
+                try {
+                    const startDate = StartDate.fromArgs(args);
+                    const talks = await this.talkRepository.fetchAll();
 
-                this.talkRepository.fetchAll()
-                    .then((result) => {
-                        const shuffledTalks = ArrayExtension.shuffle(result);
+                    if (talks.length === 0) {
+                        bot.reply(message, R.TEXT.SHOW_EMPTY);
+                    } else {
+                        const shuffledTalks = ArrayExtension.shuffle(talks);
                         const timetable = new Timetable(shuffledTalks, startDate.value);
                         bot.reply(message, timetable.generate());
-                    });
-            } catch {
-                bot.reply(message, "Invalid format. (*e.g. `show 15:00`*)");
-            }
+                    }
+
+                } catch (e) {
+                    console.error(`error: ${e.message}`);
+                    bot.reply(message, R.TEXT.SHOW_INVALID);
+                }
+            })();
         });
 
         /**
@@ -56,48 +64,64 @@ class Commands {
          * `@bot add title duration`
          */
         this._request(['add'], (bot, message, args) => {
-            try {
-                const talk = Talk.fromArgs(args);
-                this.talkRepository.save(talk.userName, talk);
-                bot.reply(message, `_${talk.description}_`);
-            } catch {
-                bot.reply(message, "Invalid format. (*e.g. `add title 10`*)");
-            }
+            (async () => {
+                try {
+                    const talk = Talk.fromArgs(args);
+                    await this.talkRepository.save(args.user.id, talk);
+                    bot.reply(message, `_${talk.description}_`);
+                } catch (e) {
+                    console.error(`error: ${e.message}`);
+                    bot.reply(message, R.TEXT.ADD_INVALID);
+                }
+            })();
+        });
+
+        /**
+         * delete my talk
+         *
+         * `@bot delete`
+         */
+        this._request(['delete'], (bot, message, args) => {
+            (async () => {
+                try {
+                    await this.talkRepository.delete(args.user.id);
+                    bot.reply(message, R.TEXT.DELETE_SUCCESS);
+                } catch (e) {
+                    console.error(`error: ${e.message}`);
+                    bot.reply(message, R.TEXT.UNIVERSAL_ERROR);
+                }
+            })();
         });
 
         /**
          * clear all talks
          *
-         * `@bot claer`
+         * `@bot claer`
          */
-        this.controller.hears(['clear'], 'direct_mention', (bot, message) => {
-            this.talkRepository.deleteAll();
-            bot.reply(message, 'Clear all talks🚮');
-        });
-
-        /**
-         * shutdown bot
-         *
-         * `@bot shutdown`
-         */
-        this.controller.hears(['shutdown'], 'direct_mention,', (bot, message) => {
+        this._request(['clear'], (bot, message, _) => {
             bot.startConversation(message, (_, convo) => {
-                convo.ask('Are you sure you want me to shutdown?', [
+                convo.ask(R.TEXT.CLEAR_ASK, [
                     {
                         pattern: bot.utterances.yes,
                         callback: (_, convo) => {
-                            convo.say('Bye!');
-                            convo.next();
-                            setTimeout(() => {
-                                process.exit();
-                            }, 3000);
+                            (async () => {
+                                try {
+                                    await this.talkRepository.deleteAll();
+                                    convo.say(R.TEXT.CLEAR_SUCCESS);
+                                } catch (e) {
+                                    console.error(`error: ${e.message}`);
+                                    convo.say(R.TEXT.CLEAR_INVALID);
+                                } finally {
+                                    convo.next();
+                                }
+                            })();
                         }
                     },
                     {
                         pattern: bot.utterances.no,
                         default: true,
                         callback: (_, convo) => {
-                            convo.say('*Phew!*');
+                            convo.say(R.TEXT.UNIVERSAL_ASK_NO);
                             convo.next();
                         }
                     }
@@ -110,8 +134,8 @@ class Commands {
          *
          * - Note: reach when the input command does not exist
          */
-        this.controller.hears(['(.*)'], 'direct_mention', (bot, message) => {
-            bot.reply(message, 'Command not supported');
+        this.controller.hears(['(.*)'], 'direct_mention, direct_mention, mention', (bot, message) => {
+            bot.reply(message, R.TEXT.NOT_SUPPORT);
         });
     }
 
@@ -122,13 +146,13 @@ class Commands {
      * @param patterns: An array or a comma separated string containing a list of regular expressions to match
      * @param completion: callback function that receives a (`bot`, `message` `args`)
      *
-     * - See Also: https://botkit.ai/docs/core.html#controllerhears
+     * - SeeAlso: https://botkit.ai/docs/core.html#controllerhears
      */
     _request(patterns, completion) {
-        this.controller.hears(patterns, 'direct_mention', (bot, message) => {
+        this.controller.hears(patterns, 'direct_message, direct_mention, mention', (bot, message) => {
             bot.api.users.info({ user: message.user }, (error, response) => {
                 if (error) {
-                    bot.reply(message, "Please try again");
+                    bot.reply(message, R.TEXT.UNIVERSAL_ERROR);
                 } else {
                     const args = new Args(message, response.user);
                     completion(bot, message, args);

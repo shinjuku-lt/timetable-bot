@@ -31,6 +31,11 @@ add your talk
 > @bot add title duration
 ```
 
+delete my talk
+```
+> @bot delete
+```
+
 clear all talks
 ```
 > @bot clear
