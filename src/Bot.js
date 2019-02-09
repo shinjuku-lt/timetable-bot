@@ -2,16 +2,15 @@ const Botkit = require('botkit');
 const Config = require('./Config');
 
 const controller = Botkit.slackbot({
-    debug: false
+    debug: false,
+    json_file_store: Config.FILE_STORAGE_NAME
 });
 
 const bot = controller
-    .spawn({ token: Config.BOT_TOKEN })
-    .startRTM((error, bot, payload) => {
-        if (error) {
-            process.exit(1);
-            console.error('Error: Cannot to Slack');
-        }
+    .configureSlackApp({
+        clientId: Config.SLACK_CLIENT_ID,
+        clientSecret: Config.SLACK_CLIENT_SECRET,
+        scopes: ['commands']
     });
 
 controller.setupWebserver(Config.PORT, function(err, webServer) {
