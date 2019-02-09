@@ -8,6 +8,7 @@
       "description": "It's slack token that timeline-bot application use."
     }
   },
-  "stack": "container"
+  "stack": "container",
+  "logo": "https://github.com/shinjuku-lt/timetable-bot/blob/master/images/logo.png"
 }
 
