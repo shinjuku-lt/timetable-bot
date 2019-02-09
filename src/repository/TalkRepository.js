@@ -1,4 +1,4 @@
-const FileStorage = require('../storage/FileStorage');
+const Storage = require('../storage/OnMemoryStorage');
 
 class TalkRepository {
 
@@ -7,13 +7,7 @@ class TalkRepository {
     }
 
     fetchAll() {
-        return this.storage.getAll()
-            .then(result => result.map(r => r.object));
-    }
-
-    fetch(id) {
-        return this.storage.get(id)
-            .then(result => result.object);
+        return Promise.resolve(this.storage.getAll());
     }
 
     save(id, talk) {
@@ -28,12 +22,8 @@ class TalkRepository {
         return this.storage.deleteAll();
     }
 
-    /**
-     * provider
-     */
-    static withFile(botKitStorage) {
-        const fileStorage = new FileStorage(botKitStorage);
-        return new TalkRepository(fileStorage);
+    static get shared() {
+        return new TalkRepository(new Storage());
     }
 }
 

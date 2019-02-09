@@ -2,8 +2,7 @@ const Botkit = require('botkit');
 const Config = require('./Config');
 
 const controller = Botkit.slackbot({
-    debug: false,
-    json_file_store: Config.FILE_STORAGE_NAME
+    debug: false
 });
 
 const bot = controller

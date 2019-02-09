@@ -9,13 +9,13 @@ const R = require('./Resource')
 /**
  * Slack command EndPoint
  *
- * - Note: for example MVC, corresponds to `Controller`
+ * - Note: for MVC, corresponds to `Controller`
  */
 class Commands {
 
     constructor(controller) {
         this.controller = controller;
-        this.talkRepository = TalkRepository.withFile(controller.storage.users);
+        this.talkRepository = TalkRepository.shared;
     }
 
     /**
@@ -64,16 +64,14 @@ class Commands {
          * `@bot add title duration`
          */
         this._request(['add'], (bot, message, args) => {
-            (async () => {
-                try {
-                    const talk = Talk.fromArgs(args);
-                    await this.talkRepository.save(args.user.id, talk);
-                    bot.reply(message, `_${talk.description}_`);
-                } catch (e) {
-                    console.error(`error: ${e.message}`);
-                    bot.reply(message, R.TEXT.ADD_INVALID);
-                }
-            })();
+            try {
+                const talk = Talk.fromArgs(args);
+                this.talkRepository.save(args.user.id, talk);
+                bot.reply(message, `_${talk.description}_`);
+            } catch (e) {
+                console.error(`error: ${e.message}`);
+                bot.reply(message, R.TEXT.ADD_INVALID);
+            }
         });
 
         /**
@@ -82,15 +80,13 @@ class Commands {
          * `@bot delete`
          */
         this._request(['delete'], (bot, message, args) => {
-            (async () => {
-                try {
-                    await this.talkRepository.delete(args.user.id);
-                    bot.reply(message, R.TEXT.DELETE_SUCCESS);
-                } catch (e) {
-                    console.error(`error: ${e.message}`);
-                    bot.reply(message, R.TEXT.UNIVERSAL_ERROR);
-                }
-            })();
+            try {
+                this.talkRepository.delete(args.user.id);
+                bot.reply(message, R.TEXT.DELETE_SUCCESS);
+            } catch (e) {
+                console.error(`error: ${e.message}`);
+                bot.reply(message, R.TEXT.UNIVERSAL_ERROR);
+            }
         });
 
         /**
@@ -104,17 +100,15 @@ class Commands {
                     {
                         pattern: bot.utterances.yes,
                         callback: (_, convo) => {
-                            (async () => {
-                                try {
-                                    await this.talkRepository.deleteAll();
-                                    convo.say(R.TEXT.CLEAR_SUCCESS);
-                                } catch (e) {
-                                    console.error(`error: ${e.message}`);
-                                    convo.say(R.TEXT.CLEAR_INVALID);
-                                } finally {
-                                    convo.next();
-                                }
-                            })();
+                            try {
+                                this.talkRepository.deleteAll();
+                                convo.say(R.TEXT.CLEAR_SUCCESS);
+                            } catch (e) {
+                                console.error(`error: ${e.message}`);
+                                convo.say(R.TEXT.CLEAR_INVALID);
+                            } finally {
+                                convo.next();
+                            }
                         }
                     },
                     {
@@ -140,7 +134,6 @@ class Commands {
     }
 
     /**
-     *
      * `controller.hears` wrapper
      *
      * @param patterns: An array or a comma separated string containing a list of regular expressions to match
