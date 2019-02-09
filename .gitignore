@@ -1,6 +1,5 @@
 # Generated files
 node_modules/
-json_db/
 
 # Settings
 .envrc
