@@ -16,6 +16,7 @@
     "url": "https://github.com/shinjuku-lt/timetable-bot"
   },
   "dependencies": {
-    "botkit": "^0.7.2"
+    "botkit": "^0.7.2",
+    "app.json": "^1.3.0"
   }
 }

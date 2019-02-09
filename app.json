@@ -1,0 +1,13 @@
+{
+  "name": "timetable-bot",
+  "description": "It's a slack bot application that can create timetable.",
+  "repository": "https://github.com/shinjuku-lt/timetable-bot",
+  "keywords": ["node", "slack", "botkit"],
+  "env": {
+    "BOT_TOKEN": {
+      "description": "It's slack token that timeline-bot application use."
+    }
+  },
+  "stack": "container"
+}
+
