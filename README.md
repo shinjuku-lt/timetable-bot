@@ -59,3 +59,7 @@ Docker run
 ```sh
 docker run -it --name timetable-bot timetable-bot:latest
 ```
+
+## Deploy
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
