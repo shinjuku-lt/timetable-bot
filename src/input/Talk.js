@@ -1,13 +1,13 @@
 class Talk {
 
-    constructor(userName, title, duration) {
-        this.userName = userName;
+    constructor(user, title, duration) {
+        this.user = user;
         this.title = title;
         this.duration = duration;
     }
 
     get description() {
-        return `name: ${this.userName}, title: ${this.title}, duration: ${this.duration}m`
+        return `name: ${this.user.name}, title: ${this.title}, duration: ${this.duration}m`
     }
 
     static fromArgs(args) {
@@ -19,7 +19,7 @@ class Talk {
         }
 
         return new Talk(
-            args.user.name,
+            args.user,
             title,
             duration
         );

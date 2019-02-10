@@ -59,11 +59,18 @@ class Commands {
                                 acc.breakCount += 1
                             }
                             return acc
-                        },  { indexes: [], elapsed: 0, breakCount: 0 }).indexes;
+                        }, { indexes: [], elapsed: 0, breakCount: 0 }).indexes;
 
                         breakIndexes.forEach(index => {
                             _talks.splice(index, 0, new Break(Config.BREAK_TIME_MINUTE));
                         });
+
+                        // replace
+                        // TODO: refactor
+                        this.talkRepository.deleteAll()
+                        _talks.forEach(talk => {
+                            this.talkRepository.save(talk.user.id, talk)
+                        })
 
                         const timetable = new Timetable(_talks, startDate.value);
                         bot.reply(message, timetable.description);
@@ -105,6 +112,26 @@ class Commands {
                 console.error(`error: ${e.message}`);
                 bot.reply(message, R.TEXT.UNIVERSAL_ERROR);
             }
+        });
+
+        this._request(['reschedule'], (bot, message, args) => {
+            (async () => {
+                try {
+                    const startDate = StartDate.fromArgs(args);
+                    const talks = await this.talkRepository.fetchAll();
+
+                    if (talks.length === 0) {
+                        bot.reply(message, R.TEXT.SHOW_EMPTY);
+                    } else {
+                        const timetable = new Timetable(talks, startDate.value);
+                        bot.reply(message, `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${timetable.description}`);
+                    }
+
+                } catch (e) {
+                    console.error(`error: ${e.message}`);
+                    bot.reply(message, R.TEXT.SHOW_INVALID);
+                }
+            })();
         });
 
         /**

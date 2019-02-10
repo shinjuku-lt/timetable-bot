@@ -7,12 +7,11 @@ module.exports = {
 
         DELETE_SUCCESS: 'Delete my talk🚮',
 
+        RESCHEDULE_SUCCESS: 'Reschedule timetable🆙',
+
         CLEAR_ASK: '⚠️Are you sure you want clear all-talks?',
         CLEAR_INVALID: "Invalid format (*e.g. `clear`*)",
         CLEAR_SUCCESS: 'Clear all talks🚮',
-
-        SHUTDOWN_ASK: 'Are you sure you want me to shutdown?',
-        SHUTDOWN_SUCCESS: 'Bye!',
 
         NOT_SUPPORT: 'Command not supported',
         UNIVERSAL_ERROR: 'Please try again',
