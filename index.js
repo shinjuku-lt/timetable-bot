@@ -6,7 +6,7 @@ if (!process.env.BOT_TOKEN) {
     console.error('Error: Specify `BOT_TOKEN` in environment');
     process.exit(1);
 }
-
+// TODO Config化
 const isProd = true;
 const command =  isProd ? new SlashCommand(Bot.controller) : new Commands(Bot.controller);
 command.hearing();
