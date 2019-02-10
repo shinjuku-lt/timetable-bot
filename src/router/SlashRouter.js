@@ -1,13 +1,15 @@
 const Args = require('../input/Args');
 const Command = require('../command/Command')
+const R = require('../Resource')
 
 /**
  * Slack command `/` slash Router
  */
 class SlashCommand {
 
-    constructor(controller) {
-        this.controller = controller;
+    constructor(bot) {
+        this.controller = bot.controller;
+        this.bot = bot.bot
         this.command = new Command()
     }
 
@@ -16,7 +18,7 @@ class SlashCommand {
      */
     hearing() {
         this.controller.on('slash_command', (bot, message) => {
-            bot.api.users.info({ user: message.user }, (error, response) => {
+            this.bot.api.users.info({ user: message.user }, (error, response) => {
                 if (error) {
                     bot.reply(message, R.TEXT.UNIVERSAL_ERROR);
                 } else {
