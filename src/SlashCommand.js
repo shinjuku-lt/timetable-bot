@@ -22,13 +22,15 @@ class SlashCommand {
             bot.replyPublic(message, message.command);
              // TODO Commandsの各コマンドを呼ぶ 
             switch (message.command) {
-                case '/lt_show':
+                case '/lt_show_timetable':
                     break;
-                case '/lt_add':
+                case '/lt_add_talk':
                     break;
-                case '/lt_delete':
+                case '/lt_delete_talk':
                     break;
-                case '/lt_clear':
+                case '/lt_clear_timetable':
+                    break;
+                case '/lt_reschedule_timetable':
                     break;
             }
         });
