@@ -1,4 +1,5 @@
 const Bot = require('./src/Bot');
+const Commands = require('./src/Commands');
 const SlashCommand = require('./src/SlashCommand');
 
 if (!process.env.BOT_TOKEN) {
@@ -6,5 +7,6 @@ if (!process.env.BOT_TOKEN) {
     process.exit(1);
 }
 
-const slashCommand = new SlashCommand(Bot.controller);
-slashCommand.hearing();
+const isProd = true;
+const command =  isProd ? new SlashCommand(Bot.controller) : new Commands(Bot.controller);
+command.hearing();

@@ -17,17 +17,6 @@ class SlashCommand {
      * Listen conversation
      */
     hearing() {
-        this.controller.setupWebserver(process.env.PORT, (err, webserver) => {
-            this.controller.createWebhookEndpoints(this.controller.webserver);
-            this.controller.createOauthEndpoints(this.controller.webserver, (err, req, res) => {
-            if (err) {
-              res.status(500).send('Error: ' + JSON.stringify(err));
-            } else {
-              res.send('Success');
-            }
-          });
-        });
-
         let bot = this.controller.spawn({
             token: process.env.BOT_TOKEN
         }).startRTM()
@@ -47,19 +36,16 @@ class SlashCommand {
         });
 
         this.controller.on('slash_command', (bot, message) => {
+            bot.replyPublic(message, message.command);
              // TODO Commandsの各コマンドを呼ぶ 
             switch (message.command) {
                 case '/lt_show':
-                    bot.replyPublic(message, message.command);
                     break;
                 case '/lt_add':
-                    bot.replyPublic(message, message.command);
                     break;
                 case '/lt_delete':
-                    bot.replyPublic(message, message.command);
                     break;
                 case '/lt_clear':
-                    bot.replyPublic(message, message.command);
                     break;
             }
         });
