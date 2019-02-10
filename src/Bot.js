@@ -12,6 +12,7 @@ const bot = controller.spawn({
 
 
 controller.setupWebserver(process.env.PORT, (err, webserver) => {
+    if (Config.IS_PRODUCTION) {
         controller.createWebhookEndpoints(controller.webserver);
         controller.createOauthEndpoints(controller.webserver, (err, req, res) => {
             if (err) {
@@ -20,7 +21,8 @@ controller.setupWebserver(process.env.PORT, (err, webserver) => {
                 res.send('Success');
             }
         });
-    });
+    }
+});
 
 if (Config.IS_PRODUCTION) {
     controller.configureSlackApp({
