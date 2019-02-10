@@ -1,0 +1,13 @@
+version: 2
+jobs:
+    build:
+        docker:
+            - image: circleci/node:4.8.2
+        steps:
+            - checkout      
+            - run: 
+                name: Build
+                command: echo "hello world"
+            - run:
+                name: Test
+                command: echo "hello world"

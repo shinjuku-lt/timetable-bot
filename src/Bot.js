@@ -14,6 +14,13 @@ const bot = controller
         }
     });
 
+controller.setupWebserver(Config.PORT, function(err, webServer) {
+    if (err) {
+        process.exit(1);
+        console.error('Error: Cannot to Slack');
+    }
+});
+
 module.exports = {
     bot: bot,
     controller: controller
