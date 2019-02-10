@@ -10,4 +10,4 @@ jobs:
                 command: echo "hello world"
             - run:
                 name: Test
-                command: echo "hello world"
+                command: npm test
