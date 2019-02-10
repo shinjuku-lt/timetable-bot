@@ -1,11 +1,11 @@
-const Args = require('./args/Args');
-const ArrayExtension = require('./extensions/ArrayExtension')
-const Break = require('./args/Break')
+const Args = require('./input/Args');
+const ArrayExtension = require('./extension/ArrayExtension')
+const Break = require('./input/Break')
 const Config = require('./Config');
-const StartDate = require('./args/StartDate')
-const Talk = require('./args/Talk')
+const StartDate = require('./input/StartDate')
+const Talk = require('./input/Talk')
 const TalkRepository = require('./repository/TalkRepository')
-const Timetable = require('./models/Timetable')
+const Timetable = require('./output/Timetable')
 const R = require('./Resource')
 
 /**

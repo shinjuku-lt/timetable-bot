@@ -3,6 +3,7 @@ const Raw = require('./Raw');
 class Timetable {
 
     /**
+     *
      * @param {args.Talk} talks
      * @param {moment} startDate
      */
