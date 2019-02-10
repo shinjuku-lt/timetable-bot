@@ -2,12 +2,21 @@ version: 2
 jobs:
     build:
         docker:
-            - image: circleci/node:4.8.2
+            - image: circleci/node:10.13.0
         steps:
             - checkout      
-            - run: 
-                name: Build
-                command: echo "hello world"
             - run:
-                name: Test
-                command: echo "hello world"
+                name: update npm
+                command: sudo npm install -g npm@latest
+            - restore_cache: 
+                key: dependency-cache-{{ checksum "package.json" }}
+            - run:
+                name: npm install
+                command: npm install
+            - save_cache:
+                key: dependency-cache-{{ checksum "package.json" }}
+                paths:
+                  - ./node_modules
+            - run:
+                name: test
+                command: npm test
