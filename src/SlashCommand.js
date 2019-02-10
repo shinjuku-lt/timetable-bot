@@ -17,24 +17,7 @@ class SlashCommand {
      * Listen conversation
      */
     hearing() {
-        let bot = this.controller.spawn({
-            token: process.env.BOT_TOKEN
-        }).startRTM()
-
-        // teamIdをストレージに保存する
-        bot.api.team.info({}, (err, response) => {
-            if (err) throw new Error(err.stack || JSON.stringify(err));
-            // FIX2 this is a workaround for https://github.com/howdyai/botkit/issues/590
-            response.team.bot = {
-                id: 'boti',
-                name: 'boti'
-            };
-            // END FIX2
-            this.controller.saveTeam(response.team, () => {
-                // ignore
-            })
-        });
-
+        
         this.controller.on('slash_command', (bot, message) => {
             bot.replyPublic(message, message.command);
              // TODO Commandsの各コマンドを呼ぶ 
