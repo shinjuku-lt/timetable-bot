@@ -10,9 +10,7 @@ const bot = controller.spawn({
     token: process.env.BOT_TOKEN
 }).startRTM()
 
-const isProd = true;
-// TODO Config化
-if (isProd) {
+if (Config.IS_PRODUCTION) {
     controller.configureSlackApp({
         clientId: Config.SLACK_CLIENT_ID,
         clientSecret: Config.SLACK_CLIENT_SECRET,
