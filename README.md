@@ -33,25 +33,25 @@ npm run start
 
 add your talk
 ```
-> @bot add title duration
+> @bot lt_add_talk title duration
 ```
 
 delete my talk
 ```
-> @bot delete
+> @bot lt_delete_talk
 ```
 
-generate timetable
+show timetable
 ```
-> @bot show 15:00
-```
-
-reschedule all talks
-```
-> @bot reschedule 17:00
+> @bot lt_show_timetable 15:00
 ```
 
-clear all talks
+reschedule timetable
+```
+> @bot lt_reschedule_timetable 17:00
+```
+
+clear lt_clear_timetable
 ```
 > @bot clear
 ```

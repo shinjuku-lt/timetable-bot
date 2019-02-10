@@ -26,11 +26,11 @@ class Commands {
     hearing() {
 
         /**
-         * save talk
+         * add your talk
          *
-         * `@bot add title duration`
+         * `@bot lt_add_talk title duration`
          */
-        this._request(['add'], (bot, message, args) => {
+        this._request(['lt_add_talk'], (bot, message, args) => {
             try {
                 const talk = Talk.fromArgs(args);
                 this.talkRepository.save(args.user.id, talk);
@@ -44,9 +44,9 @@ class Commands {
         /**
          * delete my talk
          *
-         * `@bot delete`
+         * `@bot lt_delete_talk`
          */
-        this._request(['delete'], (bot, message, args) => {
+        this._request(['lt_delete_talk'], (bot, message, args) => {
             try {
                 this.talkRepository.delete(args.user.id);
                 bot.reply(message, R.TEXT.DELETE_SUCCESS);
@@ -59,9 +59,9 @@ class Commands {
         /**
          * show timetable
          *
-         * `@bot show 15:00`
+         * `@bot lt_show_timetable 15:00`
          */
-        this._request(['show'], (bot, message, args) => {
+        this._request(['lt_show_timetable'], (bot, message, args) => {
             bot.startConversation(message, (_, convo) => {
                 convo.ask(R.TEXT.RESCHEDULE_ASK, [
                     {
@@ -125,11 +125,11 @@ class Commands {
         });
 
         /**
-         * reschedule all talks
+         * reschedule timetable
          *
-         * `@bot reschedule 17:00`
+         * `@bot lt_reschedule_timetable 17:00`
          */
-        this._request(['reschedule'], (bot, message, args) => {
+        this._request(['lt_reschedule_timetable'], (bot, message, args) => {
             bot.startConversation(message, (_, convo) => {
                 convo.ask(R.TEXT.RESCHEDULE_ASK, [
                     {
@@ -169,11 +169,11 @@ class Commands {
         });
 
         /**
-         * clear all talks
+         * clear timetable
          *
-         * `@bot claer`
+         * `@bot lt_clear_timetable`
          */
-        this._request(['clear'], (bot, message, _) => {
+        this._request(['lt_clear_timetable'], (bot, message, _) => {
             bot.startConversation(message, (_, convo) => {
                 convo.ask(R.TEXT.CLEAR_ASK, [
                     {
