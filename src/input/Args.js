@@ -7,7 +7,6 @@ class Args {
         this.user = user;
         this.texts = (() => {
             let texts = message.text.split(" ");
-            texts.shift();
             return texts;
         })();
     }

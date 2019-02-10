@@ -7,7 +7,7 @@ class TalkRepository {
     }
 
     fetchAll() {
-        return Promise.resolve(this.storage.getAll());
+        return this.storage.getAll();
     }
 
     save(id, talk) {

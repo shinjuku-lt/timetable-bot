@@ -18,6 +18,7 @@ class SlashCommand {
      */
     hearing() {
         this.controller.on('slash_command', (bot, message) => {
+            // Important: use `this.bot.api.users` !
             this.bot.api.users.info({ user: message.user }, (error, response) => {
                 if (error) {
                     bot.reply(message, R.TEXT.UNIVERSAL_ERROR);

@@ -3,6 +3,8 @@ const Command = require('../command/Command')
 const R = require('../Resource')
 
 /**
+ * @deprecated: Use `SlashRouter` instead.
+ *
  * Slack command `@bot` mention Router
  */
 class MentionRouter {

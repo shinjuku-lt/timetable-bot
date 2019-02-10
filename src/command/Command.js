@@ -40,134 +40,72 @@ class Commands {
     }
 
     showTimetable(bot, message, args) {
-        bot.startConversation(message, (_, convo) => {
-            convo.ask(R.TEXT.RESCHEDULE_ASK, [
-                {
-                    pattern: bot.utterances.yes,
-                    callback: (_, convo) => {
-                        (async () => {
-                            try {
-                                const startDate = StartDate.fromArgs(args);
-                                const talks = await this.talkRepository.fetchAll();
+        try {
+            const startDate = StartDate.fromArgs(args);
+            const talks = this.talkRepository.fetchAll();
 
-                                if (talks.length === 0) {
-                                    convo.say(R.TEXT.SHOW_EMPTY);
-                                } else {
-                                    const _talks = ArrayExtension.shuffle(talks);
+            if (talks.length === 0) {
+                bot.replyPublic(message, R.TEXT.SHOW_EMPTY);
+            } else {
+                const _talks = ArrayExtension.shuffle(talks);
 
-                                    // TDDO: refactor
-                                    const breakIndexes = _talks.reduce((acc, talk, index) => {
-                                        acc.elapsed += talk.duration
-                                        if (acc.elapsed >= Config.BREAK_THRESHOLD && ((talks.length - 1) !== index)) {
-                                            acc.indexes.push(index + (acc.breakCount + 1));
-                                            acc.elapsed = 0
-                                            acc.breakCount += 1
-                                        }
-                                        return acc
-                                    }, { indexes: [], elapsed: 0, breakCount: 0 }).indexes;
-
-                                    breakIndexes.forEach(index => {
-                                        _talks.splice(index, 0, new Break(Config.BREAK_TIME_MINUTE));
-                                    });
-
-                                    // replace
-                                    // TODO: refactor
-                                    this.talkRepository.deleteAll()
-                                    _talks.forEach(talk => {
-                                        this.talkRepository.save(talk.user.id, talk)
-                                    })
-
-                                    const timetable = new Timetable(_talks, startDate.value);
-                                    convo.say(timetable.description);
-                                }
-
-                            } catch (e) {
-                                console.error(`error: ${e.message}`);
-                                convo.say(R.TEXT.SHOW_INVALID);
-                            } finally {
-                                convo.next();
-                            }
-                        })();
+                // TDDO: refactor
+                const breakIndexes = _talks.reduce((acc, talk, index) => {
+                    acc.elapsed += talk.duration
+                    if (acc.elapsed >= Config.BREAK_THRESHOLD && ((talks.length - 1) !== index)) {
+                        acc.indexes.push(index + (acc.breakCount + 1));
+                        acc.elapsed = 0
+                        acc.breakCount += 1
                     }
-                },
-                {
-                    pattern: bot.utterances.no,
-                    default: true,
-                    callback: (_, convo) => {
-                        convo.say(R.TEXT.UNIVERSAL_ASK_NO);
-                        convo.next();
-                    }
-                }
-            ]);
-        });
+                    return acc
+                }, { indexes: [], elapsed: 0, breakCount: 0 }).indexes;
+
+                breakIndexes.forEach(index => {
+                    _talks.splice(index, 0, new Break(Config.BREAK_TIME_MINUTE));
+                });
+
+                // TODO: refactor
+                this.talkRepository.deleteAll()
+                _talks.forEach(talk => {
+                    this.talkRepository.save(talk.user.id, talk)
+                })
+
+                const timetable = new Timetable(_talks, startDate.value);
+                bot.replyPublic(message, timetable.description);
+            }
+
+        } catch (e) {
+            console.error(`error: ${e.message}`);
+            bot.replyPublic(message, R.TEXT.SHOW_INVALID);
+        }
     }
 
     rescheduleTimetable(bot, message, args) {
-        bot.startConversation(message, (_, convo) => {
-            convo.ask(R.TEXT.RESCHEDULE_ASK, [
-                {
-                    pattern: bot.utterances.yes,
-                    callback: (_, convo) => {
-                        (async () => {
-                            try {
-                                const startDate = StartDate.fromArgs(args);
-                                const talks = await this.talkRepository.fetchAll();
+        try {
+            const startDate = StartDate.fromArgs(args);
+            const talks = this.talkRepository.fetchAll();
 
-                                if (talks.length === 0) {
-                                    convo.say(R.TEXT.SHOW_EMPTY);
-                                } else {
-                                    const timetable = new Timetable(talks, startDate.value);
-                                    convo.say(`*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${timetable.description}`);
-                                }
+            if (talks.length === 0) {
+                bot.replyPublic(message, R.TEXT.SHOW_EMPTY);
+            } else {
+                const timetable = new Timetable(talks, startDate.value);
+                bot.replyPublic(message, `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${timetable.description}`);
+            }
 
-                            } catch (e) {
-                                console.error(`error: ${e.message}`);
-                                convo.say(R.TEXT.RESCHEDULE_INVALID);
-                            } finally {
-                                convo.next();
-                            }
-                        })();
-                    }
-                },
-                {
-                    pattern: bot.utterances.no,
-                    default: true,
-                    callback: (_, convo) => {
-                        convo.say(R.TEXT.UNIVERSAL_ASK_NO);
-                        convo.next();
-                    }
-                }
-            ]);
-        });
+        } catch (e) {
+            console.error(`error: ${e.message}`);
+            bot.replyPublic(message, R.TEXT.RESCHEDULE_INVALID);
+        }
     }
 
     clearTimetable(bot, message, args) {
-        bot.startConversation(message, (_, convo) => {
-            convo.ask(R.TEXT.CLEAR_ASK, [
-                {
-                    pattern: bot.utterances.yes,
-                    callback: (_, convo) => {
-                        try {
-                            this.talkRepository.deleteAll();
-                            convo.say(R.TEXT.CLEAR_SUCCESS);
-                        } catch (e) {
-                            console.error(`error: ${e.message}`);
-                            convo.say(R.TEXT.CLEAR_INVALID);
-                        } finally {
-                            convo.next();
-                        }
-                    }
-                },
-                {
-                    pattern: bot.utterances.no,
-                    default: true,
-                    callback: (_, convo) => {
-                        convo.say(R.TEXT.UNIVERSAL_ASK_NO);
-                        convo.next();
-                    }
-                }
-            ]);
-        });
+        try {
+            this.talkRepository.deleteAll();
+            bot.replyPublic(message, R.TEXT.CLEAR_SUCCESS);
+        } catch (e) {
+            console.error(`error: ${e.message}`);
+            bot.replyPublic(message, R.TEXT.CLEAR_INVALID);
+        }
     }
 }
 
