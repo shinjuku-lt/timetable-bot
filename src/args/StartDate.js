@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 class StartDate {
 
     constructor(value) {
@@ -19,7 +21,7 @@ class StartDate {
             return d
         })();
 
-        return new StartDate(date);
+        return new StartDate(moment(date));
     }
 }
 

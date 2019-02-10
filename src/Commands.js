@@ -1,9 +1,11 @@
 const Args = require('./args/Args');
 const ArrayExtension = require('./extensions/ArrayExtension')
+const Break = require('./args/Break')
+const Config = require('./Config');
 const StartDate = require('./args/StartDate')
 const Talk = require('./args/Talk')
 const TalkRepository = require('./repository/TalkRepository')
-const Timetable = require('./Timetable')
+const Timetable = require('./models/Timetable')
 const R = require('./Resource')
 
 /**
@@ -46,9 +48,25 @@ class Commands {
                     if (talks.length === 0) {
                         bot.reply(message, R.TEXT.SHOW_EMPTY);
                     } else {
-                        const shuffledTalks = ArrayExtension.shuffle(talks);
-                        const timetable = new Timetable(shuffledTalks, startDate.value);
-                        bot.reply(message, timetable.generate());
+                        const _talks = ArrayExtension.shuffle(talks);
+
+                        // TDDO: refactor
+                        const breakIndexes = _talks.reduce((acc, talk, index) => {
+                            acc.elapsed += talk.duration
+                            if (acc.elapsed >= Config.BREAK_THRESHOLD && ((talks.length - 1) !== index)) {
+                                acc.indexes.push(index + (acc.breakCount + 1));
+                                acc.elapsed = 0
+                                acc.breakCount += 1
+                            }
+                            return acc
+                        },  { indexes: [], elapsed: 0, breakCount: 0 }).indexes;
+
+                        breakIndexes.forEach(index => {
+                            _talks.splice(index, 0, new Break(Config.BREAK_TIME_MINUTE));
+                        });
+
+                        const timetable = new Timetable(_talks, startDate.value);
+                        bot.reply(message, timetable.description);
                     }
 
                 } catch (e) {

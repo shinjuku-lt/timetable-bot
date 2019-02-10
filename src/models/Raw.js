@@ -10,7 +10,14 @@ class Raw {
     }
 
     get description() {
-        return `${this.startDate.format('MM:DD')} ${this.author} "${this.title}"`
+        let text = this.startDate.format('HH:mm')
+        if (this.author) {
+            text += ` @${this.author}`
+        }
+        if (this.title) {
+            text += ` _${this.title}_`
+        }
+        return text
     }
 
     static fromArgs(args, startDate) {
@@ -18,7 +25,7 @@ class Raw {
             args.userName,
             args.title,
             startDate
-        );
+        )
     }
 
     static makeStart(date) {
