@@ -11,7 +11,7 @@ const bot = controller.spawn({
 }).startRTM()
 
 
-controller.setupWebserver(process.env.PORT, (err, webserver) => {
+controller.setupWebserver(Config.PORT, (err, webserver) => {
     if (Config.IS_PRODUCTION) {
         controller.createWebhookEndpoints(controller.webserver);
         controller.createOauthEndpoints(controller.webserver, (err, req, res) => {
