@@ -10,14 +10,8 @@ const bot = controller.spawn({
     token: process.env.BOT_TOKEN
 }).startRTM()
 
-if (Config.IS_PRODUCTION) {
-    controller.configureSlackApp({
-        clientId: Config.SLACK_CLIENT_ID,
-        clientSecret: Config.SLACK_CLIENT_SECRET,
-        scopes: ['commands']
-    });
 
-    controller.setupWebserver(process.env.PORT, (err, webserver) => {
+controller.setupWebserver(process.env.PORT, (err, webserver) => {
         controller.createWebhookEndpoints(controller.webserver);
         controller.createOauthEndpoints(controller.webserver, (err, req, res) => {
             if (err) {
@@ -26,6 +20,13 @@ if (Config.IS_PRODUCTION) {
                 res.send('Success');
             }
         });
+    });
+
+if (Config.IS_PRODUCTION) {
+    controller.configureSlackApp({
+        clientId: Config.SLACK_CLIENT_ID,
+        clientSecret: Config.SLACK_CLIENT_SECRET,
+        scopes: ['commands']
     });
 
     // teamIdをストレージに保存する
