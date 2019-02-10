@@ -31,11 +31,6 @@ npm run start
 
 ### Command
 
-bot command help
-```
-> @bot help
-```
-
 add your talk
 ```
 > @bot add title duration
@@ -46,14 +41,19 @@ delete my talk
 > @bot delete
 ```
 
-clear all talks
-```
-> @bot clear
-```
-
 generate timetable
 ```
 > @bot show 15:00
+```
+
+reschedule all talks
+```
+> @bot reschedule 17:00
+```
+
+clear all talks
+```
+> @bot clear
 ```
 
 ## (Option) Pro Tips 👌
