@@ -14,6 +14,10 @@ const bot = controller
         }
     });
 
+controller.setupWebserver(process.env.PORT || 3000, function(err, webServer) {
+    if (err) console.error(err);
+});
+
 module.exports = {
     bot: bot,
     controller: controller
