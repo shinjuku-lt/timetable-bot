@@ -10,11 +10,11 @@ class Timetable {
     constructor(talks, startDate) {
         const startRaw = Raw.makeStart(startDate.clone())
         const raws = talks.reduce((acc, talk) => {
-            acc.date = acc.date.add(talk.duration, 'm')
             acc.raws.push(Raw.fromArgs(talk, acc.date.clone()))
+            acc.date = acc.date.add(talk.duration, 'm')
             return acc
         }, { raws: [], date: startDate }).raws;
-        const endRaw = Raw.makeEnd(raws[raws.length - 1].startDate);
+        const endRaw = Raw.makeEnd(startDate);
 
         this.raws = (() => {
             raws.unshift(startRaw)
