@@ -10,7 +10,6 @@ const bot = controller.spawn({
     token: process.env.BOT_TOKEN
 }).startRTM()
 
-
 controller.setupWebserver(Config.PORT, (err, webserver) => {
     if (Config.IS_PRODUCTION) {
         controller.createWebhookEndpoints(controller.webserver);
@@ -47,5 +46,6 @@ if (Config.IS_PRODUCTION) {
 }
 
 module.exports = {
-    controller: controller
+    controller: controller,
+    bot: bot
 };
