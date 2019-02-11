@@ -2,6 +2,8 @@
 
 SlackBot to generate lt-timetable 🏭
 
+using [BotKit slash-commands](https://botkit.ai/docs/readme-slack.html#slash-commands)
+
 <p align="left">
     <img src="./images/logo.png" alt="timetable-bot" width="30%" height="30%" />
 </p>
@@ -32,28 +34,32 @@ npm run start
 ### Command
 
 add your talk
+- test: talk title
+- 10: duration
 ```
-> @bot lt_add_talk title duration
+/lt_add_talk test 10
 ```
 
 delete my talk
 ```
-> @bot lt_delete_talk
+/lt_delete_talk
 ```
 
 show timetable
+- 15:00: start date
 ```
-> @bot lt_show_timetable 15:00
+/lt_show_timetable 15:00
 ```
 
 reschedule timetable
+- 15:30: reschedule date
 ```
-> @bot lt_reschedule_timetable 17:00
+/lt_reschedule_timetable 15:30
 ```
 
-clear lt_clear_timetable
+clear timetable
 ```
-> @bot clear
+/lt_clear_timetable
 ```
 
 ## (Option) Pro Tips 👌
@@ -77,3 +83,4 @@ docker run -it --name timetable-bot timetable-bot:latest
 ## Special Thanks 💚
 
 design logo image (Created by [@mutsumi0827](https://github.com/mutsumi0827))
+

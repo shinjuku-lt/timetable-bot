@@ -4,9 +4,9 @@
 class Raw {
 
     constructor(author, title, startDate) {
-        this.author = author;
-        this.title = title;
-        this.startDate = startDate;
+        this.author = author
+        this.title = title
+        this.startDate = startDate
     }
 
     get description() {
@@ -20,21 +20,21 @@ class Raw {
         return text
     }
 
-    static fromArgs(args, startDate) {
+    static fromInput(input, startDate) {
         return new Raw(
-            args.userName,
-            args.title,
+            input.user.name,
+            input.title,
             startDate
         )
     }
 
     static makeStart(date) {
-        return new Raw(null, 'start', date);
+        return new Raw(null, 'start', date)
     }
 
     static makeEnd(date) {
-        return new Raw(null, 'end', date);
+        return new Raw(null, 'end', date)
     }
 }
 
-module.exports = Raw;
+module.exports = Raw

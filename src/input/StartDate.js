@@ -1,28 +1,30 @@
-const moment = require('moment');
+const moment = require('moment')
 
 class StartDate {
 
     constructor(value) {
-        this.value = value;
+        this.value = value
     }
 
+    /**
+     * factory with args
+     *
+     * - Note: e.g. args is `15:00`
+     * - TODO: add validation logic
+     */
     static fromArgs(args) {
-        // e.g. [15,00]
         const xs = args.texts[0].split(":")
 
         if (xs.length !== 2) {
-            throw new Error("date parase error");
+            throw new Error("date parase error")
         }
 
-        const date = (() => {
-            const d = new Date();
-            d.setHours(xs[0]);
-            d.setMinutes(xs[1]);
-            return d
-        })();
+        const date = moment()
+            .hour(xs[0])
+            .minutes(xs[1])
 
-        return new StartDate(moment(date));
+        return new StartDate(date)
     }
 }
 
-module.exports = StartDate;
+module.exports = StartDate

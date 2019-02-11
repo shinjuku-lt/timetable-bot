@@ -1,16 +1,18 @@
-const Args = require('../input/Args');
+const Args = require('../input/Args')
 const Command = require('../command/Command')
 const R = require('../Resource')
 
 /**
- * @deprecated: Use `SlashRouter` instead.
- *
  * Slack command `@bot` mention Router
+ *
+ * @deprecated:
+ *   Use `SlashRouter` instead,
+ *   currently `MentionRouter` does not work...
  */
 class MentionRouter {
 
     constructor(controller) {
-        this.controller = controller;
+        this.controller = controller
         this.command = new Command()
     }
 
@@ -26,7 +28,7 @@ class MentionRouter {
          */
         this._request(['lt_add_talk'], (bot, message, args) => {
             this.command.addTalk(bot, message, args)
-        });
+        })
 
         /**
          * delete my talk
@@ -35,7 +37,7 @@ class MentionRouter {
          */
         this._request(['lt_delete_talk'], (bot, message, args) => {
             this.command.deleteTalk(bot, message, args)
-        });
+        })
 
         /**
          * show timetable
@@ -44,7 +46,7 @@ class MentionRouter {
          */
         this._request(['lt_show_timetable'], (bot, message, args) => {
             this.command.showTimetable(bot, message, args)
-        });
+        })
 
         /**
          * reschedule timetable
@@ -53,7 +55,7 @@ class MentionRouter {
          */
         this._request(['lt_reschedule_timetable'], (bot, message, args) => {
             this.command.rescheduleTimetable(bot, message, args)
-        });
+        })
 
         /**
          * clear timetable
@@ -62,7 +64,7 @@ class MentionRouter {
          */
         this._request(['lt_clear_timetable'], (bot, message, _) => {
             this.command.clearTimetable(bot, message, args)
-        });
+        })
 
         /**
          * default
@@ -70,8 +72,8 @@ class MentionRouter {
          * - Note: reach when the input command does not exist
          */
         this.controller.hears(['(.*)'], 'direct_mention, direct_mention, mention', (bot, message) => {
-            bot.reply(message, R.TEXT.NOT_SUPPORT);
-        });
+            bot.reply(message, R.TEXT.NOT_SUPPORT)
+        })
     }
 
     /**
@@ -84,16 +86,16 @@ class MentionRouter {
      */
     _request(patterns, completion) {
         this.controller.hears(patterns, 'direct_message, direct_mention, mention', (bot, message) => {
-            bot.api.users.info({ user: message.user }, (error, response) => {
-                if (error) {
-                    bot.reply(message, R.TEXT.UNIVERSAL_ERROR);
+            bot.api.users.info({ user: message.user }, (err, res) => {
+                if (err) {
+                    bot.reply(message, R.TEXT.UNIVERSAL_ERROR)
                 } else {
-                    const args = new Args(message, response.user);
-                    completion(bot, message, args);
+                    const args = new Args(message, res.user)
+                    completion(bot, message, args)
                 }
-            });
-        });
+            })
+        })
     }
 }
 
-module.exports = MentionRouter;
+module.exports = MentionRouter
