@@ -23,6 +23,7 @@ controller.setupWebserver(Config.PORT, (err, webserver) => {
     }
 });
 
+// `SlashRouter` setting
 if (Config.IS_PRODUCTION) {
     controller.configureSlackApp({
         clientId: Config.SLACK_CLIENT_ID,
@@ -30,18 +31,16 @@ if (Config.IS_PRODUCTION) {
         scopes: ['commands']
     });
 
-    // teamIdをストレージに保存する
-    bot.api.team.info({}, (err, response) => {
+    // store `teamId` to BotKit.builtin file storage
+    bot.api.team.info({}, (err, res) => {
         if (err) throw new Error(err.stack || JSON.stringify(err));
-        // FIX2 this is a workaround for https://github.com/howdyai/botkit/issues/590
-        response.team.bot = {
+        // workaround: https://github.com/howdyai/botkit/issues/590
+        res.team.bot = {
             id: 'boti',
             name: 'boti'
         };
-        // END FIX2
-        controller.saveTeam(response.team, () => {
-            // ignore
-        })
+
+        controller.saveTeam(res.team, () => {})
     });
 }
 

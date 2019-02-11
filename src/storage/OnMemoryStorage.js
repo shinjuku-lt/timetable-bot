@@ -7,20 +7,20 @@ class OnMemoryStorage {
     }
 
     getAll() {
-        return [ ...this.map.values() ];
+        return [ ...this.map.values() ]
     }
 
     save(key, value) {
-        return this.map.set(key, value);
+        return this.map.set(key, value)
     }
 
     delete(key) {
-        return this.map.delete(key);
+        return this.map.delete(key)
     }
 
     deleteAll() {
-        return this.map.clear();
+        return this.map.clear()
     }
 }
 
-module.exports = OnMemoryStorage;
+module.exports = OnMemoryStorage
