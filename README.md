@@ -20,6 +20,8 @@ Setting `<BOT_TOKEN>`
 
 ```sh
 export BOT_TOKEN = 'XXX'
+export SLACK_CLIENT_ID = 'XXX'
+export SLACK_CLIENT_ID = 'XXX'
 ```
 
 Use of [direnv](https://github.com/direnv/direnv) is recommended.
@@ -31,33 +33,36 @@ Run bot process
 npm run start
 ```
 
-### Command
+## Command
 
-add your talk
+### add your talk
+args
 - test: talk title
 - 10: duration
 ```
 /lt_add_talk test 10
 ```
 
-delete my talk
+### delete my talk
 ```
 /lt_delete_talk
 ```
 
-show timetable
+### show timetable
+args
 - 15:00: start date
 ```
 /lt_show_timetable 15:00
 ```
 
-reschedule timetable
+### reschedule timetable
+args
 - 15:30: reschedule date
 ```
 /lt_reschedule_timetable 15:30
 ```
 
-clear timetable
+### clear timetable
 ```
 /lt_clear_timetable
 ```
