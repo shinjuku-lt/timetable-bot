@@ -1,6 +1,9 @@
 const Botkit = require('botkit')
 const Config = require('./Config')
 
+/**
+ * `BotKit` initial setting
+ */
 const controller = Botkit.slackbot({
     debug: false,
     json_file_store: Config.FILE_STORAGE_NAME
@@ -10,8 +13,9 @@ const bot = controller.spawn({
     token: process.env.BOT_TOKEN
 }).startRTM()
 
-controller.setupWebserver(Config.PORT, (err, webserver) => {
-    if (Config.IS_PRODUCTION) {
+// `SlashRouter` setting
+if (Config.IS_PRODUCTION) {
+    controller.setupWebserver(Config.PORT, (err, webserver) => {
         controller.createWebhookEndpoints(controller.webserver)
         controller.createOauthEndpoints(controller.webserver, (err, req, res) => {
             if (err) {
@@ -20,11 +24,8 @@ controller.setupWebserver(Config.PORT, (err, webserver) => {
                 res.send('Success')
             }
         })
-    }
-})
+    })
 
-// `SlashRouter` setting
-if (Config.IS_PRODUCTION) {
     controller.configureSlackApp({
         clientId: Config.SLACK_CLIENT_ID,
         clientSecret: Config.SLACK_CLIENT_SECRET,

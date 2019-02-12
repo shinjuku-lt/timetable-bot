@@ -21,7 +21,7 @@ class SlashCommand {
             // Important: use `this.bot.api.users` !
             this.bot.api.users.info({ user: message.user }, (err, res) => {
                 if (err) {
-                    bot.reply(message, R.TEXT.UNIVERSAL_ERROR)
+                    bot.replyPublic(message, R.TEXT.UNIVERSAL_ERROR)
                 } else {
                     const args = new Args(message, res.user)
                     switch (message.command) {

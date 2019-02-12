@@ -1,4 +1,4 @@
-const Bot = require('./src/Bot')
+const App = require('./src/App')
 const Config = require('./src/Config')
 const MentionRouter = require('./src/router/MentionRouter')
 const SlashRouter = require('./src/router/SlashRouter')
