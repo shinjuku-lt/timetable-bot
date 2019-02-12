@@ -1,4 +1,5 @@
 const Args = require('../input/Args')
+const Bot = require('../bot/Bot')
 const Command = require('../command/Command')
 const R = require('../Resource')
 
@@ -7,9 +8,9 @@ const R = require('../Resource')
  */
 class SlashCommand {
 
-    constructor(bot) {
-        this.controller = bot.controller
-        this.bot = bot.bot
+    constructor(controller, bot) {
+        this.controller = controller
+        this.bot = bot
         this.command = new Command()
     }
 
@@ -24,21 +25,22 @@ class SlashCommand {
                     bot.replyPublic(message, R.TEXT.UNIVERSAL_ERROR)
                 } else {
                     const args = new Args(message, res.user)
+                    const slashBot = new Bot.Slash(bot)
                     switch (message.command) {
                         case '/lt_add_talk':
-                            this.command.addTalk(bot, message, args)
+                            this.command.addTalk(slashBot, message, args)
                             break
                         case '/lt_delete_talk':
-                            this.command.deleteTalk(bot, message, args)
+                            this.command.deleteTalk(slashBot, message, args)
                             break
                         case '/lt_show_timetable':
-                            this.command.showTimetable(bot, message, args)
+                            this.command.showTimetable(slashBot, message, args)
                             break
                         case '/lt_reschedule_timetable':
-                            this.command.rescheduleTimetable(bot, message, args)
+                            this.command.rescheduleTimetable(slashBot, message, args)
                             break
                         case '/lt_clear_timetable':
-                            this.command.clearTimetable(bot, message, args)
+                            this.command.clearTimetable(slashBot, message, args)
                             break
                     }
                 }

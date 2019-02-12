@@ -24,20 +24,20 @@ class Commands {
         try {
             const talk = Talk.fromArgs(args)
             this.talkRepository.save(args.user.id, talk)
-            bot.replyPublic(message, `_${talk.description}_`)
+            bot.reply(message, `_${talk.description}_`)
         } catch (e) {
             console.error(`error: ${e.message}`)
-            bot.replyPublic(message, R.TEXT.ADD_INVALID)
+            bot.reply(message, R.TEXT.ADD_INVALID)
         }
     }
 
     deleteTalk(bot, message, args) {
         try {
             this.talkRepository.delete(args.user.id)
-            bot.replyPublic(message, R.TEXT.DELETE_SUCCESS)
+            bot.reply(message, R.TEXT.DELETE_SUCCESS)
         } catch (e) {
             console.error(`error: ${e.message}`)
-            bot.replyPublic(message, R.TEXT.UNIVERSAL_ERROR)
+            bot.reply(message, R.TEXT.UNIVERSAL_ERROR)
         }
     }
 
@@ -47,7 +47,7 @@ class Commands {
             const talks = this.talkRepository.fetchAll()
 
             if (talks.length === 0) {
-                bot.replyPublic(message, R.TEXT.SHOW_EMPTY)
+                bot.reply(message, R.TEXT.SHOW_EMPTY)
             } else {
                 const _talks = ArrayExtension.shuffle(talks)
 
@@ -73,12 +73,12 @@ class Commands {
                 })
 
                 const timetable = new Timetable(_talks, startDate.value)
-                bot.replyPublic(message, timetable.description)
+                bot.reply(message, timetable.description)
             }
 
         } catch (e) {
             console.error(`error: ${e.message}`)
-            bot.replyPublic(message, R.TEXT.SHOW_INVALID)
+            bot.reply(message, R.TEXT.SHOW_INVALID)
         }
     }
 
@@ -88,25 +88,25 @@ class Commands {
             const talks = this.talkRepository.fetchAll()
 
             if (talks.length === 0) {
-                bot.replyPublic(message, R.TEXT.SHOW_EMPTY)
+                bot.reply(message, R.TEXT.SHOW_EMPTY)
             } else {
                 const timetable = new Timetable(talks, startDate.value)
-                bot.replyPublic(message, `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${timetable.description}`)
+                bot.reply(message, `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${timetable.description}`)
             }
 
         } catch (e) {
             console.error(`error: ${e.message}`)
-            bot.replyPublic(message, R.TEXT.RESCHEDULE_INVALID)
+            bot.reply(message, R.TEXT.RESCHEDULE_INVALID)
         }
     }
 
     clearTimetable(bot, message, args) {
         try {
             this.talkRepository.deleteAll()
-            bot.replyPublic(message, R.TEXT.CLEAR_SUCCESS)
+            bot.reply(message, R.TEXT.CLEAR_SUCCESS)
         } catch (e) {
             console.error(`error: ${e.message}`)
-            bot.replyPublic(message, R.TEXT.CLEAR_INVALID)
+            bot.reply(message, R.TEXT.CLEAR_INVALID)
         }
     }
 }

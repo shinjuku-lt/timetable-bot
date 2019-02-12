@@ -9,7 +9,7 @@ if (!process.env.BOT_TOKEN) {
 }
 
 const router = Config.IS_PRODUCTION
-    ? new SlashRouter(Bot)
-    : new MentionRouter(Bot.controller)
+    ? new SlashRouter(App.controller, App.bot)
+    : new MentionRouter(App.controller)
 
 router.hearing()
