@@ -4,7 +4,8 @@
   "description": "bot to generate lt-timetable",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start-development": "NODE_ENV=development node index.js",
+    "start-production": "NODE_ENV=production node index.js",
     "test": "ava"
   },
   "author": {
