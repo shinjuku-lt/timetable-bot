@@ -1,13 +1,10 @@
 const Args = require('../input/Args')
+const Bot = require('../bot/Bot')
 const Command = require('../command/Command')
 const R = require('../Resource')
 
 /**
  * Slack command `@bot` mention Router
- *
- * @deprecated:
- *   Use `SlashRouter` instead,
- *   currently `MentionRouter` does not work...
  */
 class MentionRouter {
 
@@ -80,7 +77,7 @@ class MentionRouter {
      * `controller.hears` wrapper
      *
      * @param patterns: An array or a comma separated string containing a list of regular expressions to match
-     * @param completion: callback function that receives a (`bot`, `message` `args`)
+     * @param completion: callback function that receives a (`mentionBot`, `message` `args`)
      *
      * - SeeAlso: https://botkit.ai/docs/core.html#controllerhears
      */
@@ -91,7 +88,8 @@ class MentionRouter {
                     bot.reply(message, R.TEXT.UNIVERSAL_ERROR)
                 } else {
                     const args = new Args(message, res.user)
-                    completion(bot, message, args)
+                    const mentionBot = new Bot.Mention(bot)
+                    completion(mentionBot, message, args)
                 }
             })
         })

@@ -2,7 +2,7 @@
 
 SlackBot to generate lt-timetable 🏭
 
-using [BotKit slash-commands](https://botkit.ai/docs/readme-slack.html#slash-commands)
+using [howdyai/botkit](https://github.com/howdyai/botkit).
 
 <p align="left">
     <img src="./images/logo.png" alt="timetable-bot" width="30%" height="30%" />
@@ -20,51 +20,44 @@ Setting `<BOT_TOKEN>`
 
 ```sh
 export BOT_TOKEN = 'XXX'
-export SLACK_CLIENT_ID = 'XXX'
-export SLACK_CLIENT_ID = 'XXX'
 ```
 
 Use of [direnv](https://github.com/direnv/direnv) is recommended.
 
 ## Usage
-Run bot process
+Run bot process (development)
 
 ```sh
-npm run start
+npm run start-development
 ```
 
 ## Command
+- development: `@` mention style
+- production: `/` command style
 
 ### add your talk
-args
-- test: talk title
-- 10: duration
 ```
-/lt_add_talk test 10
+@bot lt_add_talk test 10
 ```
 
 ### delete my talk
 ```
-/lt_delete_talk
+@bot lt_delete_talk
 ```
 
 ### show timetable
-args
-- 15:00: start date
 ```
-/lt_show_timetable 15:00
+@bot lt_show_timetable 15:00
 ```
 
 ### reschedule timetable
-args
-- 15:30: reschedule date
 ```
-/lt_reschedule_timetable 15:30
+@bot lt_reschedule_timetable 15:30
 ```
 
 ### clear timetable
 ```
-/lt_clear_timetable
+@bot lt_clear_timetable
 ```
 
 ## (Option) Pro Tips 👌
@@ -82,6 +75,17 @@ docker run -it --name timetable-bot timetable-bot:latest
 ```
 
 ## Deploy
+required
+```sh
+export SLACK_CLIENT_ID = 'XXX'
+export SLACK_CLIENT_SECRET = 'XXX'
+```
+
+option
+```sh
+# default 3000
+export PORT = '8000'
+```
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
