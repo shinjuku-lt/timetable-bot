@@ -1,5 +1,4 @@
 class RescheduleMinute {
-
     constructor(value) {
         this.value = value
     }
@@ -14,7 +13,7 @@ class RescheduleMinute {
         const minute = parseInt(args.texts[0])
 
         if (isNaN(minute)) {
-            throw new Error("minute parase error")
+            throw new Error('minute parase error')
         }
 
         return new StartDate(minute)

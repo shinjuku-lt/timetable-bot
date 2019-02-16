@@ -7,7 +7,6 @@ const R = require('../Resource')
  * Slack command `@bot` mention Router
  */
 class MentionRouter {
-
     constructor(controller) {
         this.controller = controller
         this.command = new Command()
@@ -17,7 +16,6 @@ class MentionRouter {
      * Listen conversation
      */
     hearing() {
-
         /**
          * add your talk
          *

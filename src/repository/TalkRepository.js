@@ -1,7 +1,6 @@
 const Storage = require('../storage/OnMemoryStorage')
 
 class TalkRepository {
-
     constructor(storage) {
         this.storage = storage
     }

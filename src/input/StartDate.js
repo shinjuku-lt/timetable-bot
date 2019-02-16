@@ -1,7 +1,6 @@
 const moment = require('moment')
 
 class StartDate {
-
     constructor(value) {
         this.value = value
     }
@@ -13,10 +12,10 @@ class StartDate {
      * - TODO: add validation logic
      */
     static fromArgs(args) {
-        const xs = args.texts[0].split(":")
+        const xs = args.texts[0].split(':')
 
         if (xs.length !== 2) {
-            throw new Error("date parase error")
+            throw new Error('date parase error')
         }
 
         const date = moment()

@@ -2,7 +2,6 @@
  * Timetable raw *ViewModel*
  */
 class Raw {
-
     constructor(author, title, startDate) {
         this.author = author
         this.title = title
@@ -21,11 +20,7 @@ class Raw {
     }
 
     static fromInput(input, startDate) {
-        return new Raw(
-            input.user.name,
-            input.title,
-            startDate
-        )
+        return new Raw(input.user.name, input.title, startDate)
     }
 
     static makeStart(date) {

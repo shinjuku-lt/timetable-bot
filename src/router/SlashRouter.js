@@ -7,7 +7,6 @@ const R = require('../Resource')
  * Slack command `/` slash Router
  */
 class SlashCommand {
-
     constructor(controller, bot) {
         this.controller = controller
         this.bot = bot

@@ -8,8 +8,6 @@ if (!process.env.BOT_TOKEN) {
     process.exit(1)
 }
 
-const router = Config.IS_PRODUCTION
-    ? new SlashRouter(App.controller, App.bot)
-    : new MentionRouter(App.controller)
+const router = Config.IS_PRODUCTION ? new SlashRouter(App.controller, App.bot) : new MentionRouter(App.controller)
 
 router.hearing()

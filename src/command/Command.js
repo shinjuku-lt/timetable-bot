@@ -15,7 +15,6 @@ const R = require('../Resource')
  *   - https://github.com/shinjuku-lt/timetable-bot/pull/35
  */
 class Commands {
-
     constructor() {
         this.talkRepository = TalkRepository.shared
     }
@@ -52,15 +51,18 @@ class Commands {
                 const _talks = ArrayExtension.shuffle(talks)
 
                 // TDDO: consider adding `usercase` class
-                const breakIndexes = _talks.reduce((acc, talk, index) => {
-                    acc.elapsed += talk.duration
-                    if (acc.elapsed >= Config.BREAK_THRESHOLD && ((talks.length - 1) !== index)) {
-                        acc.indexes.push(index + (acc.breakCount + 1))
-                        acc.elapsed = 0
-                        acc.breakCount += 1
-                    }
-                    return acc
-                }, { indexes: [], elapsed: 0, breakCount: 0 }).indexes
+                const breakIndexes = _talks.reduce(
+                    (acc, talk, index) => {
+                        acc.elapsed += talk.duration
+                        if (acc.elapsed >= Config.BREAK_THRESHOLD && talks.length - 1 !== index) {
+                            acc.indexes.push(index + (acc.breakCount + 1))
+                            acc.elapsed = 0
+                            acc.breakCount += 1
+                        }
+                        return acc
+                    },
+                    { indexes: [], elapsed: 0, breakCount: 0 }
+                ).indexes
 
                 breakIndexes.forEach(index => {
                     _talks.splice(index, 0, new Break(Config.BREAK_TIME_MINUTE))
@@ -75,7 +77,6 @@ class Commands {
                 const timetable = new Timetable(_talks, startDate.value)
                 bot.reply(message, timetable.description)
             }
-
         } catch (e) {
             console.error(`error: ${e.message}`)
             bot.reply(message, R.TEXT.SHOW_INVALID)
@@ -93,7 +94,6 @@ class Commands {
                 const timetable = new Timetable(talks, startDate.value)
                 bot.reply(message, `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${timetable.description}`)
             }
-
         } catch (e) {
             console.error(`error: ${e.message}`)
             bot.reply(message, R.TEXT.RESCHEDULE_INVALID)

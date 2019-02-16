@@ -31,5 +31,5 @@ class SlashBot {
 
 module.exports = {
     Mention: MentionBot,
-    Slash: SlashBot
+    Slash: SlashBot,
 }

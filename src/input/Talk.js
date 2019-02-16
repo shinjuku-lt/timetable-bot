@@ -1,5 +1,4 @@
 class Talk {
-
     constructor(user, title, duration) {
         this.user = user
         this.title = title
@@ -21,7 +20,7 @@ class Talk {
         const duration = parseInt(args.texts[1])
 
         if (isNaN(duration)) {
-            throw new Error("duration parase error")
+            throw new Error('duration parase error')
         }
 
         return new Talk(args.user, title, duration)

@@ -7,7 +7,7 @@ class OnMemoryStorage {
     }
 
     getAll() {
-        return [ ...this.map.values() ]
+        return [...this.map.values()]
     }
 
     save(key, value) {
