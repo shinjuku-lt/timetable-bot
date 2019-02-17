@@ -31,6 +31,17 @@ Run bot process (development)
 npm run start-development
 ```
 
+## Development
+
+<p align="left">
+    <img src="./images/architecture.png" alt="architecture" width="30%" height="30%" />
+</p>
+
+required
+```sh
+npm run format
+```
+
 ## Command
 - development: `@` mention style
 - production: `/` command style
