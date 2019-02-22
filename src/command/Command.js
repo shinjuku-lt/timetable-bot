@@ -1,6 +1,4 @@
 const ArrayExtension = require('../extension/ArrayExtension')
-const Break = require('../input/Break')
-const Config = require('../Config')
 const StartDate = require('../input/StartDate')
 const Talk = require('../input/Talk')
 const TalkRepository = require('../repository/TalkRepository')
@@ -48,33 +46,15 @@ class Commands {
             if (talks.length === 0) {
                 bot.reply(message, R.TEXT.SHOW_EMPTY)
             } else {
-                const _talks = ArrayExtension.shuffle(talks)
-
-                // TDDO: consider adding `usercase` class
-                const breakIndexes = _talks.reduce(
-                    (acc, talk, index) => {
-                        acc.elapsed += talk.duration
-                        if (acc.elapsed >= Config.BREAK_THRESHOLD && talks.length - 1 !== index) {
-                            acc.indexes.push(index + (acc.breakCount + 1))
-                            acc.elapsed = 0
-                            acc.breakCount += 1
-                        }
-                        return acc
-                    },
-                    { indexes: [], elapsed: 0, breakCount: 0 }
-                ).indexes
-
-                breakIndexes.forEach(index => {
-                    _talks.splice(index, 0, new Break(Config.BREAK_TIME_MINUTE))
-                })
+                const shuffledTalks = ArrayExtension.shuffle(talks)
 
                 // TDDO: consider adding `usercase` class
                 this.talkRepository.deleteAll()
-                _talks.forEach(talk => {
+                shuffledTalks.forEach(talk => {
                     this.talkRepository.save(talk.user.id, talk)
                 })
 
-                const timetable = new Timetable(_talks, startDate.value)
+                const timetable = new Timetable(shuffledTalks, startDate.value)
                 bot.reply(message, timetable.description)
             }
         } catch (e) {
