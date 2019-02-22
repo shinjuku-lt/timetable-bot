@@ -46,9 +46,6 @@ class Timetable {
     reschedule(minutes) {
         const newDate = this.startDate.add(minutes, 'm')
         const newRaws = this.raws
-            .filter(raw => {
-                return raw.startDate >= newDate
-            })
             .map(raw => {
                 raw.startDate.add(minutes, 'm')
                 return raw
