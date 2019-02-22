@@ -10,6 +10,10 @@ class OnMemoryStorage {
         return [...this.map.values()]
     }
 
+    get(key) {
+        return this.map.get(key)
+    }
+
     save(key, value) {
         return this.map.set(key, value)
     }

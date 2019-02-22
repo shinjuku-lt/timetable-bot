@@ -35,7 +35,7 @@ class MentionRouter {
         })
 
         /**
-         * show timetable
+         * show(generate) timetable
          *
          * `@bot lt_show_timetable 15:00`
          */
@@ -46,7 +46,7 @@ class MentionRouter {
         /**
          * reschedule timetable
          *
-         * `@bot lt_reschedule_timetable 17:00`
+         * `@bot lt_reschedule_timetable 10`
          */
         this._request(['lt_reschedule_timetable'], (bot, message, args) => {
             this.command.rescheduleTimetable(bot, message, args)
@@ -57,7 +57,7 @@ class MentionRouter {
          *
          * `@bot lt_clear_timetable`
          */
-        this._request(['lt_clear_timetable'], (bot, message, _) => {
+        this._request(['lt_clear_timetable'], (bot, message, args) => {
             this.command.clearTimetable(bot, message, args)
         })
 

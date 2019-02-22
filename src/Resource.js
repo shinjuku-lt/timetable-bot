@@ -7,7 +7,7 @@ module.exports = {
 
         DELETE_SUCCESS: 'Delete my talk🚮',
 
-        RESCHEDULE_INVALID: 'Invalid format (*e.g. `/lt_reschedule_timetable 15:30`*)',
+        RESCHEDULE_INVALID: 'Invalid format (*e.g. `/lt_reschedule_timetable 10`*)',
         RESCHEDULE_SUCCESS: 'Reschedule timetable🆙',
 
         CLEAR_INVALID: 'Invalid format (*e.g. `clear`*)',

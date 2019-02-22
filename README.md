@@ -56,14 +56,14 @@ npm run format
 @bot lt_delete_talk
 ```
 
-### show timetable
+### show(generate) timetable
 ```
 @bot lt_show_timetable 15:00
 ```
 
 ### reschedule timetable
 ```
-@bot lt_reschedule_timetable 15:30
+@bot lt_reschedule_timetable 10
 ```
 
 ### clear timetable

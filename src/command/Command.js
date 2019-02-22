@@ -1,10 +1,11 @@
 const ArrayExtension = require('../extension/ArrayExtension')
-const Break = require('../input/Break')
-const Config = require('../Config')
+const moment = require('moment')
+const RescheduleMinute = require('../input/RescheduleMinute')
 const StartDate = require('../input/StartDate')
 const Talk = require('../input/Talk')
 const TalkRepository = require('../repository/TalkRepository')
 const Timetable = require('../output/Timetable')
+const TimetableRepository = require('../repository/TimetableRepository')
 const R = require('../Resource')
 
 /**
@@ -17,6 +18,8 @@ const R = require('../Resource')
 class Commands {
     constructor() {
         this.talkRepository = TalkRepository.shared
+        this.timetableRepository = TimetableRepository.shared
+        this.today = moment().format('YYYY-MM-DD')
     }
 
     addTalk(bot, message, args) {
@@ -48,33 +51,9 @@ class Commands {
             if (talks.length === 0) {
                 bot.reply(message, R.TEXT.SHOW_EMPTY)
             } else {
-                const _talks = ArrayExtension.shuffle(talks)
-
-                // TDDO: consider adding `usercase` class
-                const breakIndexes = _talks.reduce(
-                    (acc, talk, index) => {
-                        acc.elapsed += talk.duration
-                        if (acc.elapsed >= Config.BREAK_THRESHOLD && talks.length - 1 !== index) {
-                            acc.indexes.push(index + (acc.breakCount + 1))
-                            acc.elapsed = 0
-                            acc.breakCount += 1
-                        }
-                        return acc
-                    },
-                    { indexes: [], elapsed: 0, breakCount: 0 }
-                ).indexes
-
-                breakIndexes.forEach(index => {
-                    _talks.splice(index, 0, new Break(Config.BREAK_TIME_MINUTE))
-                })
-
-                // TDDO: consider adding `usercase` class
-                this.talkRepository.deleteAll()
-                _talks.forEach(talk => {
-                    this.talkRepository.save(talk.user.id, talk)
-                })
-
-                const timetable = new Timetable(_talks, startDate.value)
+                const shuffledTalks = ArrayExtension.shuffle(talks)
+                const timetable = Timetable.fromInput(shuffledTalks, startDate.value)
+                this.timetableRepository.save(this.today, timetable)
                 bot.reply(message, timetable.description)
             }
         } catch (e) {
@@ -85,14 +64,16 @@ class Commands {
 
     rescheduleTimetable(bot, message, args) {
         try {
-            const startDate = StartDate.fromArgs(args)
-            const talks = this.talkRepository.fetchAll()
+            const rescheduleMinute = RescheduleMinute.fromArgs(args).value
+            const timetable = this.timetableRepository.fetch(this.today)
 
-            if (talks.length === 0) {
+            if (!timetable) {
                 bot.reply(message, R.TEXT.SHOW_EMPTY)
             } else {
-                const timetable = new Timetable(talks, startDate.value)
-                bot.reply(message, `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${timetable.description}`)
+                const rescheduledTimetable = timetable.reschedule(rescheduleMinute)
+                this.timetableRepository.save(this.today, rescheduledTimetable)
+
+                bot.reply(message, `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${rescheduledTimetable.description}`)
             }
         } catch (e) {
             console.error(`error: ${e.message}`)
@@ -103,6 +84,7 @@ class Commands {
     clearTimetable(bot, message, args) {
         try {
             this.talkRepository.deleteAll()
+            this.timetableRepository.delete(this.today)
             bot.reply(message, R.TEXT.CLEAR_SUCCESS)
         } catch (e) {
             console.error(`error: ${e.message}`)
