@@ -3,6 +3,7 @@ const StartDate = require('../input/StartDate')
 const Talk = require('../input/Talk')
 const TalkRepository = require('../repository/TalkRepository')
 const Timetable = require('../output/Timetable')
+const TimetableRepository = require('../repository/TimetableRepository')
 const R = require('../Resource')
 
 /**
@@ -15,6 +16,8 @@ const R = require('../Resource')
 class Commands {
     constructor() {
         this.talkRepository = TalkRepository.shared
+        this.timetableRepository = TimetableRepository.shared
+        this.today = moment().format('YYYY-MM-DD')
     }
 
     addTalk(bot, message, args) {
@@ -47,14 +50,8 @@ class Commands {
                 bot.reply(message, R.TEXT.SHOW_EMPTY)
             } else {
                 const shuffledTalks = ArrayExtension.shuffle(talks)
-
-                // TDDO: consider adding `usercase` class
-                this.talkRepository.deleteAll()
-                shuffledTalks.forEach(talk => {
-                    this.talkRepository.save(talk.user.id, talk)
-                })
-
-                const timetable = new Timetable(shuffledTalks, startDate.value)
+                const timetable = Timetable.fromInput(shuffledTalks, startDate.value)
+                this.timetableRepository.save(this.today, timetable)
                 bot.reply(message, timetable.description)
             }
         } catch (e) {
@@ -82,7 +79,7 @@ class Commands {
 
     clearTimetable(bot, message, args) {
         try {
-            this.talkRepository.deleteAll()
+            this.timetableRepository.delete(this.today)
             bot.reply(message, R.TEXT.CLEAR_SUCCESS)
         } catch (e) {
             console.error(`error: ${e.message}`)

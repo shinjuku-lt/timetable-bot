@@ -1,13 +1,18 @@
 const Raw = require('./Raw')
 
 class Timetable {
+    constructor(raws, startDate) {
+        this.raws = raws
+        this.startDate = startDate
+    }
+
     /**
      * `Input` user command model -> `Output` view model
      *
      * @param {input.Talk} talks
      * @param {moment} startDate
      */
-    constructor(talks, startDate) {
+    static fromInput(talks, startDate) {
         const startRaw = Raw.makeStart(startDate.clone())
         const raws = talks.reduce(
             (acc, talk) => {
@@ -19,11 +24,14 @@ class Timetable {
         ).raws
         const endRaw = Raw.makeEnd(startDate)
 
-        this.raws = (() => {
-            raws.unshift(startRaw)
-            raws.push(endRaw)
-            return raws
-        })()
+        return new Timetable(
+            (() => {
+                raws.unshift(startRaw)
+                raws.push(endRaw)
+                return raws
+            })(),
+            startDate
+        )
     }
 
     get description() {
