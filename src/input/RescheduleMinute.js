@@ -15,6 +15,9 @@ class RescheduleMinute {
         if (isNaN(minute)) {
             throw new Error('minute parase error')
         }
+        if (minute <= 0) {
+            throw new Error('duration parase error')
+        }
 
         return new StartDate(minute)
     }

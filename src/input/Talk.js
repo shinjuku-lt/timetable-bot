@@ -22,6 +22,9 @@ class Talk {
         if (isNaN(duration)) {
             throw new Error('duration parase error')
         }
+        if (!(duration >= 5 && duration <= 60)) {
+            throw new Error('duration parase error')
+        }
 
         return new Talk(args.user, title, duration)
     }
