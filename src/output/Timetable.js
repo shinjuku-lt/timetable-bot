@@ -45,11 +45,10 @@ class Timetable {
 
     reschedule(minutes) {
         const newDate = this.startDate.add(minutes, 'm')
-        const newRaws = this.raws
-            .map(raw => {
-                raw.startDate.add(minutes, 'm')
-                return raw
-            })
+        const newRaws = this.raws.map(raw => {
+            raw.startDate.add(minutes, 'm')
+            return raw
+        })
 
         return new Timetable(newRaws, newDate)
     }
