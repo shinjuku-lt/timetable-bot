@@ -16,7 +16,7 @@ class TimetableRepository {
      * @param {date} id : showing date
      */
     fetch(id) {
-        return this.storage.fetch(id)
+        return this.storage.get(id)
     }
 
     save(id, timetable) {

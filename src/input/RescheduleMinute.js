@@ -19,7 +19,7 @@ class RescheduleMinute {
             throw new Error('duration parase error')
         }
 
-        return new StartDate(minute)
+        return new RescheduleMinute(minute)
     }
 }
 

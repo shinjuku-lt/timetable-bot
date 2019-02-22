@@ -13,6 +13,8 @@ class Timetable {
      * @param {moment} startDate
      */
     static fromInput(talks, startDate) {
+        const _startDate = startDate.clone()
+
         const startRaw = Raw.makeStart(startDate.clone())
         const raws = talks.reduce(
             (acc, talk) => {
@@ -30,7 +32,7 @@ class Timetable {
                 raws.push(endRaw)
                 return raws
             })(),
-            startDate
+            _startDate
         )
     }
 
@@ -39,6 +41,20 @@ class Timetable {
             const d = raw.description
             return (acc += index === 0 ? d : `\n${d}`)
         }, '')
+    }
+
+    reschedule(minutes) {
+        const newDate = this.startDate.add(minutes, 'm')
+        const newRaws = this.raws
+            .filter(raw => {
+                return raw.startDate >= newDate
+            })
+            .map(raw => {
+                raw.startDate.add(minutes, 'm')
+                return raw
+            })
+
+        return new Timetable(newRaws, newDate)
     }
 }
 

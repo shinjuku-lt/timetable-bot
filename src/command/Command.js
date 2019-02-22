@@ -1,4 +1,6 @@
 const ArrayExtension = require('../extension/ArrayExtension')
+const moment = require('moment')
+const RescheduleMinute = require('../input/RescheduleMinute')
 const StartDate = require('../input/StartDate')
 const Talk = require('../input/Talk')
 const TalkRepository = require('../repository/TalkRepository')
@@ -62,14 +64,16 @@ class Commands {
 
     rescheduleTimetable(bot, message, args) {
         try {
-            const startDate = StartDate.fromArgs(args)
-            const talks = this.talkRepository.fetchAll()
+            const rescheduleMinute = RescheduleMinute.fromArgs(args).value
+            const timetable = this.timetableRepository.fetch(this.today)
 
-            if (talks.length === 0) {
+            if (!timetable) {
                 bot.reply(message, R.TEXT.SHOW_EMPTY)
             } else {
-                const timetable = new Timetable(talks, startDate.value)
-                bot.reply(message, `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${timetable.description}`)
+                const rescheduledTimetable = timetable.reschedule(rescheduleMinute)
+                this.timetableRepository.save(this.today, rescheduledTimetable)
+
+                bot.reply(message, `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${rescheduledTimetable.description}`)
             }
         } catch (e) {
             console.error(`error: ${e.message}`)
@@ -79,6 +83,7 @@ class Commands {
 
     clearTimetable(bot, message, args) {
         try {
+            this.talkRepository.deleteAll()
             this.timetableRepository.delete(this.today)
             bot.reply(message, R.TEXT.CLEAR_SUCCESS)
         } catch (e) {
