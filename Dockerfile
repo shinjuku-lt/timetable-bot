@@ -6,4 +6,4 @@ COPY . /app
 
 RUN npm i
 
-CMD npm start-production
+CMD npm run start-production
