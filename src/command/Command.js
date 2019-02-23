@@ -26,20 +26,40 @@ class Commands {
         try {
             const talk = Talk.fromArgs(args)
             this.talkRepository.save(args.user.id, talk)
-            bot.reply(message, `_${talk.description}_`)
+            bot.reply(message, {
+                "attachments": [{
+                  "text": `_${talk.description}_`,
+                  "color": "good"
+                }]
+              })
         } catch (e) {
             console.error(`error: ${e.message}`)
-            bot.reply(message, R.TEXT.ADD_INVALID)
+            bot.reply(message, {
+                "attachments": [{
+                  "text": R.TEXT.ADD_INVALID,
+                  "color": "danger"
+                }]
+              })
         }
     }
 
     deleteTalk(bot, message, args) {
         try {
             this.talkRepository.delete(args.user.id)
-            bot.reply(message, R.TEXT.DELETE_SUCCESS)
+            bot.reply(message, {
+                "attachments": [{
+                  "text": R.TEXT.DELETE_SUCCESS,
+                  "color": "good"
+                }]
+              })
         } catch (e) {
             console.error(`error: ${e.message}`)
-            bot.reply(message, R.TEXT.UNIVERSAL_ERROR)
+            bot.reply(message, {
+                "attachments": [{
+                  "text": R.TEXT.UNIVERSAL_ERROR,
+                  "color": "danger"
+                }]
+              })
         }
     }
 
@@ -49,16 +69,31 @@ class Commands {
             const talks = this.talkRepository.fetchAll()
 
             if (talks.length === 0) {
-                bot.reply(message, R.TEXT.SHOW_EMPTY)
+                bot.reply(message, {
+                    "attachments": [{
+                      "text": R.TEXT.SHOW_EMPTY,
+                      "color": "warning"
+                    }]
+                  })
             } else {
                 const shuffledTalks = ArrayExtension.shuffle(talks)
                 const timetable = Timetable.fromInput(shuffledTalks, startDate.value)
                 this.timetableRepository.save(this.today, timetable)
-                bot.reply(message, timetable.description)
+                bot.reply(message, {
+                    "attachments": [{
+                      "text": timetable.description,
+                      "color": "good"
+                    }]
+                  })
             }
         } catch (e) {
             console.error(`error: ${e.message}`)
-            bot.reply(message, R.TEXT.SHOW_INVALID)
+            bot.reply(message, {
+                "attachments": [{
+                  "text": R.TEXT.SHOW_INVALID,
+                  "color": "danger"
+                }]
+              })
         }
     }
 
@@ -68,16 +103,31 @@ class Commands {
             const timetable = this.timetableRepository.fetch(this.today)
 
             if (!timetable) {
-                bot.reply(message, R.TEXT.SHOW_EMPTY)
+                bot.reply(message, {
+                    "attachments": [{
+                      "text": R.TEXT.SHOW_EMPTY,
+                      "color": "warning"
+                    }]
+                  })
             } else {
                 const rescheduledTimetable = timetable.reschedule(rescheduleMinute)
                 this.timetableRepository.save(this.today, rescheduledTimetable)
 
-                bot.reply(message, `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${rescheduledTimetable.description}`)
+                bot.reply(message, {
+                    "attachments": [{
+                      "text": `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${rescheduledTimetable.description}`,
+                      "color": "good"
+                    }]
+                  })
             }
         } catch (e) {
             console.error(`error: ${e.message}`)
-            bot.reply(message, R.TEXT.RESCHEDULE_INVALID)
+            bot.reply(message, {
+                "attachments": [{
+                  "text": R.TEXT.RESCHEDULE_INVALID,
+                  "color": "danger"
+                }]
+              })
         }
     }
 
@@ -85,10 +135,20 @@ class Commands {
         try {
             this.talkRepository.deleteAll()
             this.timetableRepository.delete(this.today)
-            bot.reply(message, R.TEXT.CLEAR_SUCCESS)
+            bot.reply(message, {
+                "attachments": [{
+                  "text": R.TEXT.CLEAR_SUCCESS,
+                  "color": "good"
+                }]
+              })
         } catch (e) {
             console.error(`error: ${e.message}`)
-            bot.reply(message, R.TEXT.CLEAR_INVALID)
+            bot.reply(message, {
+                "attachments": [{
+                  "text": R.TEXT.CLEAR_INVALID,
+                  "color": "danger"
+                }]
+              })
         }
     }
 }
