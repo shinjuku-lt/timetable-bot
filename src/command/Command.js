@@ -12,8 +12,6 @@ const R = require('../Resource')
  * Slack command EndPoint Action
  *
  * - Note: for MVC, corresponds to `Controller`
- * - Important: **optimize** `/` command setting
- *   - https://github.com/shinjuku-lt/timetable-bot/pull/35
  */
 class Commands {
     constructor() {
