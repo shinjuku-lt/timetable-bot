@@ -27,19 +27,23 @@ class Commands {
             const talk = Talk.fromArgs(args)
             this.talkRepository.save(args.user.id, talk)
             bot.reply(message, {
-                "attachments": [{
-                  "text": `_${talk.description}_`,
-                  "color": "good"
-                }]
-              })
+                attachments: [
+                    {
+                        text: `_${talk.description}_`,
+                        color: 'good',
+                    },
+                ],
+            })
         } catch (e) {
             console.error(`error: ${e.message}`)
             bot.reply(message, {
-                "attachments": [{
-                  "text": R.TEXT.ADD_INVALID,
-                  "color": "danger"
-                }]
-              })
+                attachments: [
+                    {
+                        text: R.TEXT.ADD_INVALID,
+                        color: 'danger',
+                    },
+                ],
+            })
         }
     }
 
@@ -47,19 +51,23 @@ class Commands {
         try {
             this.talkRepository.delete(args.user.id)
             bot.reply(message, {
-                "attachments": [{
-                  "text": R.TEXT.DELETE_SUCCESS,
-                  "color": "good"
-                }]
-              })
+                attachments: [
+                    {
+                        text: R.TEXT.DELETE_SUCCESS,
+                        color: 'good',
+                    },
+                ],
+            })
         } catch (e) {
             console.error(`error: ${e.message}`)
             bot.reply(message, {
-                "attachments": [{
-                  "text": R.TEXT.UNIVERSAL_ERROR,
-                  "color": "danger"
-                }]
-              })
+                attachments: [
+                    {
+                        text: R.TEXT.UNIVERSAL_ERROR,
+                        color: 'danger',
+                    },
+                ],
+            })
         }
     }
 
@@ -70,30 +78,36 @@ class Commands {
 
             if (talks.length === 0) {
                 bot.reply(message, {
-                    "attachments": [{
-                      "text": R.TEXT.SHOW_EMPTY,
-                      "color": "warning"
-                    }]
-                  })
+                    attachments: [
+                        {
+                            text: R.TEXT.SHOW_EMPTY,
+                            color: 'warning',
+                        },
+                    ],
+                })
             } else {
                 const shuffledTalks = ArrayExtension.shuffle(talks)
                 const timetable = Timetable.fromInput(shuffledTalks, startDate.value)
                 this.timetableRepository.save(this.today, timetable)
                 bot.reply(message, {
-                    "attachments": [{
-                      "text": timetable.description,
-                      "color": "good"
-                    }]
-                  })
+                    attachments: [
+                        {
+                            text: timetable.description,
+                            color: 'good',
+                        },
+                    ],
+                })
             }
         } catch (e) {
             console.error(`error: ${e.message}`)
             bot.reply(message, {
-                "attachments": [{
-                  "text": R.TEXT.SHOW_INVALID,
-                  "color": "danger"
-                }]
-              })
+                attachments: [
+                    {
+                        text: R.TEXT.SHOW_INVALID,
+                        color: 'danger',
+                    },
+                ],
+            })
         }
     }
 
@@ -104,30 +118,36 @@ class Commands {
 
             if (!timetable) {
                 bot.reply(message, {
-                    "attachments": [{
-                      "text": R.TEXT.SHOW_EMPTY,
-                      "color": "warning"
-                    }]
-                  })
+                    attachments: [
+                        {
+                            text: R.TEXT.SHOW_EMPTY,
+                            color: 'warning',
+                        },
+                    ],
+                })
             } else {
                 const rescheduledTimetable = timetable.reschedule(rescheduleMinute)
                 this.timetableRepository.save(this.today, rescheduledTimetable)
 
                 bot.reply(message, {
-                    "attachments": [{
-                      "text": `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${rescheduledTimetable.description}`,
-                      "color": "good"
-                    }]
-                  })
+                    attachments: [
+                        {
+                            text: `*${R.TEXT.RESCHEDULE_SUCCESS}*\n ${rescheduledTimetable.description}`,
+                            color: 'good',
+                        },
+                    ],
+                })
             }
         } catch (e) {
             console.error(`error: ${e.message}`)
             bot.reply(message, {
-                "attachments": [{
-                  "text": R.TEXT.RESCHEDULE_INVALID,
-                  "color": "danger"
-                }]
-              })
+                attachments: [
+                    {
+                        text: R.TEXT.RESCHEDULE_INVALID,
+                        color: 'danger',
+                    },
+                ],
+            })
         }
     }
 
@@ -136,19 +156,23 @@ class Commands {
             this.talkRepository.deleteAll()
             this.timetableRepository.delete(this.today)
             bot.reply(message, {
-                "attachments": [{
-                  "text": R.TEXT.CLEAR_SUCCESS,
-                  "color": "good"
-                }]
-              })
+                attachments: [
+                    {
+                        text: R.TEXT.CLEAR_SUCCESS,
+                        color: 'good',
+                    },
+                ],
+            })
         } catch (e) {
             console.error(`error: ${e.message}`)
             bot.reply(message, {
-                "attachments": [{
-                  "text": R.TEXT.CLEAR_INVALID,
-                  "color": "danger"
-                }]
-              })
+                attachments: [
+                    {
+                        text: R.TEXT.CLEAR_INVALID,
+                        color: 'danger',
+                    },
+                ],
+            })
         }
     }
 }
