@@ -1,7 +1,5 @@
 # timetable-bot
 
-SlackBot to generate lt-timetable 🏭
-
 using [howdyai/botkit](https://github.com/howdyai/botkit).
 
 <p align="left">
